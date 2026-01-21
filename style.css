@@ -1,0 +1,121 @@
+/* 
+  과제 조건: HTML, CSS, Flex 만 이용할 것
+  디자인 테마: 깔끔한 기본 스타일 (Beginner Friendly)
+*/
+
+:root {
+    --bg-color: #ffffff;
+    /* 흰색 배경 */
+    --text-color: #333333;
+    /* 검은색 글자 */
+    --primary-color: #4a90e2;
+    /* 기본 파란색 */
+    --border-color: #dddddd;
+    /* 연한 회색 테두리 */
+    --box-bg: #f9f9f9;
+    /* 연한 회색 박스 배경 */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    /* Flexbox for layout */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* 1. 상단 메뉴바 (GNB) */
+header {
+    height: 60px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: white;
+
+    /* Flexbox 적용 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: #555;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+/* 2. 메인 컨텐츠 영역 */
+main {
+    flex: 1;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+}
+
+/* 3. 게시글 목록 */
+.post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.post-item {
+    background-color: var(--box-bg);
+    border: 1px solid var(--border-color);
+    padding: 15px 20px;
+    border-radius: 8px;
+    /* 둥근 모서리 약간만 */
+
+    /* Flexbox 적용 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-item:hover {
+    background-color: #f0f0f0;
+    /* 호버 시 약간 진하게 */
+    cursor: pointer;
+}
+
+.post-title {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.post-info {
+    font-size: 0.9rem;
+    color: #888;
+    display: flex;
+    gap: 10px;
+}
