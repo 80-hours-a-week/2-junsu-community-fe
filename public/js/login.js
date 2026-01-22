@@ -2,12 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const loginBtn = document.getElementById('loginBtn');
-
-    // Helper text elements
-    // Note: In the HTML, we need to make sure we have these elements
-    // The plan mentioned <div id="emailError"> and <div id="passwordError">
     const emailError = document.getElementById('emailError');
     const passwordError = document.getElementById('passwordError');
+
+    // 백엔드 API 주소 (FastAPI 서버)
+    const API_BASE_URL = 'http://localhost:8000';
 
     // Regex patterns
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -25,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             emailError.textContent = "이메일을 입력해주세요.";
             emailError.classList.add('show');
         } else if (!emailRegex.test(email)) {
-            emailError.textContent = "올바른 이메일 주소 형식을 입력해주세요. (예: example@adapterz.kr)";
+            emailError.textContent = "올바른 이메일 주소 형식을 입력해주세요. (예: example@example.com)";
             emailError.classList.add('show');
         } else {
             emailError.textContent = "";
@@ -50,30 +49,69 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isEmailValid && isPasswordValid) {
             loginBtn.disabled = false;
             loginBtn.classList.add('active');
-            loginBtn.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--active-btn-color').trim();
         } else {
             loginBtn.disabled = true;
             loginBtn.classList.remove('active');
-            loginBtn.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--inactive-btn-color').trim();
         }
     }
 
-    // Event Listeners
+    // Event Listeners (2-1. Event 처리)
     emailInput.addEventListener('input', validateInput);
     passwordInput.addEventListener('input', validateInput);
 
     // Initial check
     validateInput();
 
-    // Form submission
+    // Form submission with Fetch API (2-2. Fetch 적용)
     const loginForm = document.getElementById('loginForm');
-    loginForm.addEventListener('submit', function (event) {
+    loginForm.addEventListener('submit', async function (event) {
         event.preventDefault();
 
-        // Double check just in case
-        if (!loginBtn.disabled) {
-            alert('로그인 성공!');
-            window.location.href = '/posts';
+        if (loginBtn.disabled) {
+            return;
+        }
+
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        try {
+            // 로딩 상태 표시
+            loginBtn.textContent = '로그인 중...';
+            loginBtn.disabled = true;
+
+            // Fetch API 호출
+            const response = await fetch(`${API_BASE_URL}/v1/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include', // 쿠키 포함 (세션 유지)
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // 로그인 성공
+                alert(`로그인 성공! ${result.message}`);
+                window.location.href = '/posts';
+            } else {
+                // 로그인 실패 (서버에서 보낸 에러 메시지 표시)
+                alert(`로그인 실패: ${result.message}`);
+                loginBtn.textContent = '로그인';
+                loginBtn.disabled = false;
+                loginBtn.classList.add('active');
+            }
+        } catch (error) {
+            // 네트워크 에러 등
+            console.error('Login error:', error);
+            alert('서버 연결에 실패했습니다. 백엔드 서버가 실행 중인지 확인해주세요.');
+            loginBtn.textContent = '로그인';
+            loginBtn.disabled = false;
+            loginBtn.classList.add('active');
         }
     });
 });
