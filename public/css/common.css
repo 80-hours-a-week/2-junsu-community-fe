@@ -1,0 +1,93 @@
+/* 
+  Common Styles - 공통 스타일
+  모든 페이지에서 사용되는 기본 스타일
+*/
+
+:root {
+    --bg-color: #F4F5F7;
+    --text-color: #333333;
+    --primary-color: #4a90e2;
+    --border-color: #dddddd;
+    --box-bg: #f9f9f9;
+    --active-btn-color: #7F6AEE;
+    --inactive-btn-color: #ACA0EB;
+    --error-color: #ff0000;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* 상단 메뉴바 (GNB) */
+header {
+    border-bottom: 1px solid var(--border-color);
+    background-color: white;
+    padding: 36px 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+}
+
+.logo {
+    font-family: 'Sandoll GogoRound', sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 100%;
+    letter-spacing: 0;
+    color: #000000;
+    text-decoration: none;
+    text-align: center;
+    width: 206px;
+    height: 32px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* 프로필 아이콘 */
+.profile-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #333;
+    background-image: url('../assets/profile_placeholder.png');
+    background-size: cover;
+    cursor: pointer;
+}
+
+/* 메인 컨텐츠 영역 */
+main {
+    flex: 1;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.nav-links a {
+    color: #555;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+h2 {
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+}
