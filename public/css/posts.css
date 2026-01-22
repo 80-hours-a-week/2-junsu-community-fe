@@ -2,100 +2,198 @@
   Posts Page Styles - 게시글 목록 페이지 전용 스타일
 */
 
+/* 메인 컨테이너 - 중앙 정렬 및 너비 제한 */
 .post-list-container {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    /* 카드 중앙 정렬 */
     gap: 20px;
 }
 
-.post-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
+/* 웰컴 섹션 */
 .welcome-section {
+    width: 280px;
+    /* 너비 제한 (디자인 스펙) */
     text-align: center;
     margin-bottom: 20px;
-    font-size: 1.2rem;
-    font-weight: bold;
+
+    font-family: 'Pretendard', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    /* Regular */
+    line-height: 130%;
+    /* 1.3 */
+    color: #000000;
 }
 
+.welcome-section span {
+    font-weight: 700;
+    /* Bold (게시판) */
+}
+
+/* 액션 섹션 */
 .action-section {
+    width: 100%;
+    max-width: 592px;
+    /* 카드 너비와 동일하게 맞춤 */
     display: flex;
     justify-content: flex-end;
     margin-bottom: 20px;
 }
 
+/* 1. 게시글 작성 버튼 */
 .write-btn {
-    padding: 10px 20px;
-    background-color: var(--inactive-btn-color);
-    color: white;
+    width: 138px;
+    height: 39px;
+    border-radius: 16px;
     border: none;
-    border-radius: 20px;
-    font-weight: bold;
+
+    background-color: #ACA0EB;
+    /* 기본 색상 */
+
+    font-family: 'Pretendard', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    /* Bold */
+    color: #FFFFFF;
+
     cursor: pointer;
     transition: background-color 0.3s;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .write-btn:hover {
-    background-color: var(--active-btn-color);
+    background-color: #7F6AEE;
+    /* Hover 색상 */
 }
 
-.post-card {
-    background-color: white;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 24px;
+/* 게시글 목록 컨테이너 */
+.post-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
+    /* 카드 간 간격 */
+    width: 100%;
+    align-items: center;
+}
+
+/* 3. 게시글 카드 (Post Box) */
+.post-card {
+    width: 592px;
+    /* 피그마 스펙 (고정) */
+    min-width: 592px;
+    /* 축소 방지 */
+    max-width: 592px;
+    /* 확대 방지 */
+    height: 169px;
+    /* 피그마 스펙 (고정) */
+
+    background-color: #FFFFFF;
+    border: 1px solid transparent;
+    border-radius: 16px;
+
+    padding: 24px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    /* 수동 마진으로 간격 제어 */
+
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .post-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
+/* 4. 제목 */
 .post-card-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #000;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    /* Bold */
+    color: #000000;
+    line-height: 130%;
+    /* 피그마 스펙 준수 */
+    letter-spacing: 0;
+
+    -webkit-font-smoothing: antialiased;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    margin: 0 0 8px 0;
+    /* 제목 하단 여백 */
 }
 
+/* 5~8. 메타 정보 (좋아요, 댓글, 조회수, 날짜) */
 .post-card-meta {
     display: flex;
     justify-content: space-between;
-    font-size: 0.9rem;
-    color: #888;
+    align-items: center;
+
+    font-family: 'Pretendard', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    /* Regular */
+    color: #000000;
+
+    margin: 0 0 0 0;
+    /* 메타 하단 여백 숨김 */
 }
 
 .post-stats {
     display: flex;
-    gap: 12px;
+    gap: 16px;
 }
 
+.post-date {
+    text-align: right;
+}
+
+/* 6. 중간 구분선 - Full Width 처리 */
+.post-divider {
+    width: auto;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.16);
+    /* #00000029 */
+    border: none;
+
+    /* 양옆 확장 및 상하 간격 조정 */
+    margin: 8px -24px;
+    /* 상하 8px, 좌우 -24px (확장) */
+}
+
+/* 9~10. 작성자 정보 */
 .post-author-row {
-    border-top: 1px solid #f0f0f0;
-    padding-top: 16px;
     display: flex;
     align-items: center;
     gap: 10px;
+    /* 피그마 스펙 */
+    height: 36px;
+    margin-top: auto
 }
 
 .author-profile-img {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background-color: #ddd;
+    background-color: #D9D9D9;
 }
 
 .author-name {
-    font-weight: bold;
-    color: #333;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    /* Bold */
+    color: #000000;
 }

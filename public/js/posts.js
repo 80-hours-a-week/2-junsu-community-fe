@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="post-date">${dateStr}</div>
             </div>
+            <div class="post-divider"></div>
             <div class="post-author-row">
                 <div class="author-profile-img"></div>
                 <span class="author-name">${post.author}</span>
