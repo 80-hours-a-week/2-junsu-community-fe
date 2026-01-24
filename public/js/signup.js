@@ -1,6 +1,71 @@
 // signup.js - 회원가입 로직 (Event Processing First)
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    // 커스텀 모달 함수 (Live Reload 영향을 받지 않음)
+    function showCustomModal(message, onConfirm) {
+        // 오버레이 생성
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        `;
+
+        // 모달 박스 생성
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            max-width: 300px;
+        `;
+
+        // 메시지
+        const msg = document.createElement('p');
+        msg.textContent = message;
+        msg.style.cssText = `
+            margin: 0 0 20px 0;
+            font-size: 16px;
+            line-height: 1.5;
+            white-space: pre-line;
+        `;
+
+        // 확인 버튼
+        const confirmBtn = document.createElement('button');
+        confirmBtn.textContent = '확인';
+        confirmBtn.style.cssText = `
+            background: #7F6AEE;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        `;
+        confirmBtn.addEventListener('click', () => {
+            document.body.removeChild(overlay);
+            if (onConfirm) onConfirm();
+        });
+
+        modal.appendChild(msg);
+        modal.appendChild(confirmBtn);
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        // 버튼에 포커스
+        confirmBtn.focus();
+    }
+
     // 1. Elements
     const signupForm = document.getElementById('signupForm');
     const signupBtn = document.getElementById('signupBtn');
@@ -291,14 +356,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // 6. Submit (Prevent default for Step 1)
-    signupBtn.addEventListener('click', (e) => {
-        e.preventDefault();
+    const API_BASE_URL = 'http://localhost:8000';
+
+    // 6. Submit (Fetch API Integration)
+    // Changed to 'click' listener on button (type="button") to strictly prevent form submission reload
+    signupBtn.addEventListener('click', async () => {
         if (signupBtn.disabled) return;
 
-        console.log("Signup Button Clicked - Validation Passed!");
-        alert("회원가입 유효성 검사 통과! (API 호출은 다음 단계 구현)");
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        const nickname = nicknameInput.value;
 
-        // TODO: Step 2 - Fetch API
+        // Backend currently expects a String for profileimage, but no file upload endpoint exists.
+        // We will send null or a placeholder if an image is selected visually, 
+        // to comply with the backend schema.
+        // If we had an uploader, we would upload first -> get URL -> send URL.
+        const profileimage = isProfileImageSelected ? null : null;
+
+        const payload = {
+            email: email,
+            password: password,
+            nickname: nickname,
+            profileimage: profileimage
+        };
+
+        try {
+            console.log('=== Signup Request Starting ===');
+            console.log('Payload:', payload);
+
+            const response = await fetch(`${API_BASE_URL}/v1/auth/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            console.log('Response Status:', response.status);
+            const data = await response.json();
+            console.log('Response Data:', data);
+
+            if (response.status === 201) {
+                console.log('=== SUCCESS PATH ===');
+                // 커스텀 모달 사용 - 네이티브 alert 대신
+                showCustomModal("회원가입이 완료되었습니다.\n로그인 화면으로 이동합니다.", () => {
+                    window.location.href = 'login.html';
+                });
+            } else {
+                console.log('=== ERROR PATH ===');
+                console.log('Error message:', data.message);
+                alert(data.message || "회원가입에 실패했습니다.");
+                console.log('Alert should have displayed. No redirect happening.');
+            }
+
+        } catch (error) {
+            console.error('=== CATCH PATH ===');
+            console.error('Error details:', error);
+            alert("서버 통신 중 오류가 발생했습니다.");
+            console.log('Catch alert displayed. No redirect happening.');
+        }
     });
 
     // Initialize
