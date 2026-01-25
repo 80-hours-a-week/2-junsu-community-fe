@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modalConfirmBtn.addEventListener('click', async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/v1/users/${currentUser.userId}`, {
+            const response = await fetch(`${API_BASE_URL}/v1/users/me`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
