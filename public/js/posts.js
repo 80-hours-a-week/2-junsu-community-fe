@@ -136,8 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = document.createElement('div');
         card.className = 'post-card';
         card.onclick = () => {
-            alert(`게시글 상세(ID: ${post.postId})로 이동합니다.`);
-            // location.href = `/posts/${post.postId}`; // 상세 페이지 구현 시 주석 해제
+            window.location.href = `post_detail.html?id=${post.postId}`;
         };
 
         // Backend response mapping
