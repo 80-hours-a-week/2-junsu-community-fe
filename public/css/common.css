@@ -23,7 +23,7 @@
 }
 
 body {
-    font-family: sans-serif;
+    font-family: 'Pretendard', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     display: flex;
@@ -38,9 +38,9 @@ header {
     padding: 36px 20px;
     display: flex;
     justify-content: center;
-    /* justify-content: flex-end; -> center로 변경하여 내부 컨텐츠 중앙 정렬 */
     align-items: center;
     position: relative;
+    /* 드롭다운의 기준점 역할을 할 수도 있음 */
 }
 
 .header-content {
@@ -48,6 +48,8 @@ header {
     max-width: 592px;
     display: flex;
     justify-content: flex-end;
+    position: relative;
+    /* 드롭다운 위치 기준 */
 }
 
 .logo {
@@ -75,6 +77,43 @@ header {
     background-image: url('../assets/profile_placeholder.png');
     background-size: cover;
     cursor: pointer;
+    border: 1px solid #eee;
+}
+
+/* 프로필 드롭다운 메뉴 */
+.profile-dropdown {
+    display: none;
+    /* 기본 숨김 */
+    position: absolute;
+    top: 46px;
+    /* 아이콘 바로 아래 */
+    right: 0;
+    width: 140px;
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.profile-dropdown.show {
+    display: flex;
+}
+
+.dropdown-item {
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #000000;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+
+.dropdown-item:hover {
+    background-color: #F4F5F7;
 }
 
 /* 메인 컨텐츠 영역 */
