@@ -182,41 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 백엔드가 아직 이 엔드포인트를 지원하지 않음 - 405 오류 방지를 위해 비활성화
         // 백엔드에서 GET /likes 지원 또는 게시글 상세에 isLiked 포함 시 재활성화 가능
         return;
-
-        /*
-        if (!currentUser) return;
-
-        try {
-            const response = await fetch(`${API_BASE_URL}/v1/posts/${postId}/likes`, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            console.log('[Like Status] GET response:', response.status);
-
-            if (response.ok) {
-                const result = await response.json();
-                const data = result.data || result;
-
-                if (data.isLiked === true || data.liked === true) {
-                    isLiked = true;
-                    likeBtn.classList.add('liked');
-                    console.log('[Like Status] User has liked this post');
-                } else if (Array.isArray(data)) {
-                    const userLiked = data.some(like =>
-                        String(like.userId) === String(currentUser.userId)
-                    );
-                    if (userLiked) {
-                        isLiked = true;
-                        likeBtn.classList.add('liked');
-                        console.log('[Like Status] Found user in likers list');
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('[Like Status] Error checking like status:', error);
-        }
-        */
     }
 
     async function toggleLike() {
@@ -227,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        console.log('[Like] Toggle Like called. Current isLiked:', isLiked);
+        console.log('[좋아요] 토글 요청. 현재 상태:', isLiked);
 
         try {
             // 현재 상태에 따라 메서드 결정
@@ -238,11 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 credentials: 'include'
             });
 
-            console.log('[Like] Request:', method, 'Status:', response.status);
+            console.log('[좋아요] 요청:', method, '상태 코드:', response.status);
 
             // 409 Conflict (ALREADY_LIKED) 처리 - 상태만 교정하고 재시도 안함
             if (response.status === 409) {
-                console.log('[Like] Got 409 Conflict - already liked. Correcting state.');
+                console.log('[좋아요] 409 Conflict 발생 - 이미 좋아요 상태임. UI 상태 교정.');
                 isLiked = true;
                 likeBtn.classList.add('liked');
                 // 카운트 변경 안함 - 백엔드에 이미 좋아요 카운트됨
@@ -254,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 isLiked = (method === 'POST');
                 likeBtn.classList.toggle('liked', isLiked);
 
-                console.log('[Like] Success! isLiked is now:', isLiked);
+                console.log('[좋아요] 성공! 변경된 상태:', isLiked);
 
                 // 로컬 카운트 업데이트
                 let count = parseInt(likeCount.textContent.replace(/[^0-9]/g, '')) || 0;
@@ -264,10 +229,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } else {
                 const errorText = await response.text();
-                console.error('[Like] Failed:', response.status, errorText);
+                console.error('[좋아요] 실패:', response.status, errorText);
             }
         } catch (error) {
-            console.error('[Like] Error:', error);
+            console.error('[좋아요] 에러:', error);
         }
     }
 
@@ -390,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
         viewCount.textContent = formatCount(currentPost.viewCount || 0);
         commentCountEl.textContent = formatCount(currentPost.commentCount || 0);
 
-        console.log('[Post] Full post data:', currentPost);
+        console.log('[게시글] 전체 데이터:', currentPost);
 
         // 소유권 확인 (userId 비교)
         const currentUserId = currentUser ? String(currentUser.userId) : null;
@@ -404,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
             postAuthorId = String(currentPost.userId);
         }
 
-        console.log('[Post] currentUserId:', currentUserId, ', postAuthorId:', postAuthorId);
+        console.log('[게시글] currentUserId:', currentUserId, ', postAuthorId:', postAuthorId);
 
         if (currentUserId && postAuthorId && currentUserId === postAuthorId) {
             postActions.style.display = 'flex';
@@ -416,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentPost.isLiked === true || currentPost.liked === true) {
             isLiked = true;
             likeBtn.classList.add('liked');
-            console.log('[Post] User has already liked this post (boolean flag)');
+            console.log('[게시글] 사용자가 이미 좋아요를 누름 (boolean flag)');
         } else if (currentPost.likes && Array.isArray(currentPost.likes) && currentUser) {
             // likes 배열이 있고 사용자 정보가 있다면 확인
             const userLiked = currentPost.likes.some(like =>
@@ -425,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (userLiked) {
                 isLiked = true;
                 likeBtn.classList.add('liked');
-                console.log('[Post] User has already liked this post (found in array)');
+                console.log('[게시글] 사용자가 이미 좋아요를 누름 (배열 확인)');
             } else {
                 isLiked = false;
                 likeBtn.classList.remove('liked');
@@ -437,8 +402,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderComments(comments) {
-        console.log('[Comments] Rendering', comments.length, 'comments');
-        console.log('[Comments] Current User:', currentUser);
+        console.log('[댓글] 렌더링 개수:', comments.length);
+        console.log('[댓글] 현재 사용자:', currentUser);
 
         commentList.innerHTML = '';
 
@@ -473,13 +438,13 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (currentEmail && commentEmail) {
                 // 이메일은 사용자보다 고유하므로 안전한 비교 가능
                 isOwner = currentEmail === commentEmail;
-                console.log(`[Comment ${index}] Using email comparison: ${currentEmail} === ${commentEmail}`);
+                console.log(`[댓글 ${index}] 이메일 비교 사용: ${currentEmail} === ${commentEmail}`);
             } else {
-                console.warn(`[Comment ${index}] Missing authorId and email - cannot determine ownership.`);
+                console.warn(`[댓글 ${index}] authorId와 email 누락 - 소유권 확인 불가.`);
             }
 
-            console.log(`[Comment ${index}] CommentID: ${comment.commentId}, AuthorID: ${commentAuthorId}, Email: ${commentEmail}, CurrentUserID: ${currentUserId}, isOwner: ${isOwner}`);
-            console.log(`[Comment ${index}] Full comment object:`, comment);
+            console.log(`[댓글 ${index}] CommentID: ${comment.commentId}, AuthorID: ${commentAuthorId}, Email: ${commentEmail}, CurrentUserID: ${currentUserId}, isOwner: ${isOwner}`);
+            console.log(`[댓글 ${index}] 전체 댓글 객체:`, comment);
 
             // 표시할 작성자 이름 가져오기 (다양한 필드 시도)
             const authorDisplayName = comment.authorNickname || comment.nickname || comment.writer || '익명';

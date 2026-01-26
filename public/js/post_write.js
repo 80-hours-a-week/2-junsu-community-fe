@@ -1,4 +1,4 @@
-// post_write.js - 게시글 작성 로직 (Event Processing First, then Fetch API)
+// post_write.js - 게시글 작성 로직
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 1. Elements
+    // 1. 요소 가져오기
     // ==========================================
     const postWriteForm = document.getElementById('postWriteForm');
     const titleInput = document.getElementById('title');
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_BASE_URL = 'http://localhost:8000';
 
     // ==========================================
-    // 2. Helper Functions
+    // 2. 헬퍼 함수
     // ==========================================
     function showHelper(message) {
         helperText.textContent = message;
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 3. Event Handlers (Step 1 - Event Processing)
+    // 3. 이벤트 핸들러 (이벤트 처리)
     // ==========================================
 
     // 제목 입력 - 26자 제한은 HTML maxlength로 처리됨
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 4. Submit Handler (Step 2 - Fetch API)
+    // 4. 제출 핸들러 (Fetch API)
     // ==========================================
     submitBtn.addEventListener('click', async () => {
         if (submitBtn.disabled) return;
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            console.log('=== Post Create Request ===');
+            console.log('=== 게시글 작성 요청 ===');
             console.log('Payload:', payload);
 
             const response = await fetch(`${API_BASE_URL}/v1/posts`, {
@@ -192,6 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initialize
+    // 초기화
     checkFormValidity();
 });

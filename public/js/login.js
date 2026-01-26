@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 백엔드 API 주소 (FastAPI 서버)
     const API_BASE_URL = 'http://localhost:8000';
 
-    // Regex patterns
+    // 정규식 패턴
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
 
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let isEmailValid = false;
         let isPasswordValid = false;
 
-        // Email Validation
+        // 이메일 유효성 검사
         if (!email) {
             emailError.textContent = "이메일을 입력해주세요.";
             emailError.classList.add('show');
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isEmailValid = true;
         }
 
-        // Password Validation
+        // 비밀번호 유효성 검사
         if (!password) {
             passwordError.textContent = "비밀번호를 입력해주세요.";
             passwordError.classList.add('show');
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isPasswordValid = true;
         }
 
-        // Button State
+        // 버튼 상태 업데이트
         if (isEmailValid && isPasswordValid) {
             loginBtn.disabled = false;
             loginBtn.classList.add('active');
@@ -55,14 +55,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Event Listeners (2-1. Event 처리)
+    // 이벤트 리스너 (입력값 실시간 검증)
     emailInput.addEventListener('input', validateInput);
     passwordInput.addEventListener('input', validateInput);
 
-    // Initial check
+    // 초기 검증 실행
     validateInput();
 
-    // Form submission with Fetch API (2-2. Fetch 적용)
+    // 폼 제출 (Fetch API 사용)
     const loginForm = document.getElementById('loginForm');
     loginForm.addEventListener('submit', async function (event) {
         event.preventDefault();

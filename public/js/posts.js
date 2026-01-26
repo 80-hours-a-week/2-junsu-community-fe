@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (posts.length > 0) {
-                    console.log('[Posts] First post data:', posts[0]);
+                    console.log('[게시글] 첫 번째 게시글 데이터:', posts[0]);
                 }
 
                 posts.forEach(post => {
@@ -98,9 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 updateProfileIcon(result.data.profileimage);
             } else {
-                console.warn('Not logged in or session expired');
-                // Redirect to login if needed, or just show default icon
-                // window.location.href = '/login.html'; 
+                console.warn('Login required or session expired');
             }
         } catch (error) {
             console.error('Error fetching user profile:', error);

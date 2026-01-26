@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_BASE_URL = 'http://localhost:8000';
 
     // ==========================================
-    // 1. Elements
+    // 1. 요소 가져오기
     // ==========================================
     const profileIcon = document.getElementById('profileIcon');
     const profileDropdown = document.getElementById('profileDropdown');
@@ -25,11 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const toast = document.getElementById('toast');
 
-    // State
+    // 상태 변수
     let currentUser = null;
 
     // ==========================================
-    // 2. Helper Functions
+    // 2. 헬퍼 함수
     // ==========================================
     function showHelper(message) {
         nicknameHelper.textContent = message;
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 3. Dropdown Menu
+    // 3. 드롭다운 메뉴
     // ==========================================
     profileIcon.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 4. Load User Data
+    // 4. 사용자 데이터 로드
     // ==========================================
     async function loadUserData() {
         try {
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 5. Event Handlers
+    // 5. 이벤트 핸들러
     // ==========================================
     nicknameInput.addEventListener('input', () => {
         hideHelper();
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 6. Submit Handler - Profile Update
+    // 6. 폼 제출 - 프로필 수정
     // ==========================================
     submitBtn.addEventListener('click', async () => {
         const nickname = nicknameInput.value.trim();
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            console.log('=== Profile Update Request ===');
+            console.log('=== 프로필 수정 요청 ===');
             console.log('Payload:', payload);
 
             const response = await fetch(`${API_BASE_URL}/v1/users/${currentUser.userId}`, {
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 7. Withdrawal Modal
+    // 7. 회원 탈퇴 모달
     // ==========================================
     withdrawBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 8. Initialize
+    // 8. 초기화
     // ==========================================
     loadUserData();
 });

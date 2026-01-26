@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 1. Elements
+    // 1. 요소 가져오기
     // ==========================================
     const postEditForm = document.getElementById('postEditForm');
     const titleInput = document.getElementById('title');
@@ -26,12 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileNameSpan = document.getElementById('fileName');
     const submitBtn = document.getElementById('submitBtn');
 
-    // State
+    // 상태 변수
     let originalPost = null;
     let currentFileUrl = null;
 
     // ==========================================
-    // 2. Helper Functions
+    // 2. 헬퍼 함수
     // ==========================================
     function showHelper(message) {
         helperText.textContent = message;
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 3. Load Existing Post Data
+    // 3. 기존 게시글 데이터 로드
     // ==========================================
     async function loadPostData() {
         try {
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 4. Event Handlers
+    // 4. 이벤트 핸들러
     // ==========================================
     titleInput.addEventListener('input', () => {
         hideHelper();
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 5. Submit Handler - PATCH API
+    // 5. 제출 핸들러 - PATCH API
     // ==========================================
     submitBtn.addEventListener('click', async () => {
         if (submitBtn.disabled) return;
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            console.log('=== Post Edit Request ===');
+            console.log('=== 게시글 수정 요청 ===');
             console.log('Payload:', payload);
 
             const response = await fetch(`${API_BASE_URL}/v1/posts/${postId}`, {
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 6. Initialize
+    // 6. 초기화
     // ==========================================
     loadPostData();
 });

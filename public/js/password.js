@@ -4,19 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_BASE_URL = 'http://localhost:8000';
 
     // ==========================================
-    // 1. Elements
+    // 1. 요소 가져오기
     // ==========================================
-    // Header & Dropdown
+    // 헤더 및 드롭다운
     const profileIcon = document.getElementById('profileIcon');
     const profileDropdown = document.getElementById('profileDropdown');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    // Form Elements
+    // 폼 입력 필드
     const currentPasswordInput = document.getElementById('currentPassword');
     const newPasswordInput = document.getElementById('newPassword');
     const confirmPasswordInput = document.getElementById('confirmPassword');
 
-    // Helper Texts
+    // 헬퍼 텍스트
     const currentPasswordHelper = document.getElementById('currentPasswordHelper');
     const newPasswordHelper = document.getElementById('newPasswordHelper');
     const confirmPasswordHelper = document.getElementById('confirmPasswordHelper');
@@ -24,11 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('submitBtn');
     const toast = document.getElementById('toast');
 
-    // State
+    // 상태 변수
     let currentUser = null;
 
     // ==========================================
-    // 2. Helper Functions
+    // 2. 헬퍼 함수
     // ==========================================
     function showHelper(element, message) {
         element.textContent = message;
@@ -50,10 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 비밀번호 유효성 검사 (8~20자, 대/소/숫/특 포함)
     function validatePassword(password) {
-        // const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
-        // 백엔드 utils.validate_password 참고:
-        // 단순히 길이와 문자 종류 확인인 경우가 많음, 여기서는 상세 규칙 적용
-
         if (!password) return { valid: false, message: '*비밀번호를 입력해주세요.' };
 
         if (password.length < 8 || password.length > 20) {
@@ -86,8 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 2. 새 비밀번호 유효성
-        const newPwValidation = validatePassword(newPw);
-        if (!newPwValidation.valid) {
+        if (!validatePassword(newPw).valid) {
             submitBtn.disabled = true;
             submitBtn.classList.remove('active');
             return;
@@ -106,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 3. API & Data Loading
+    // 3. API 및 데이터 로드
     // ==========================================
     async function loadUserData() {
         try {
@@ -133,9 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 4. Event Handlers
+    // 4. 이벤트 핸들러
     // ==========================================
-    // Dropdown
+    // 드롭다운 메뉴
     profileIcon.addEventListener('click', (e) => {
         e.stopPropagation();
         profileDropdown.classList.toggle('show');
@@ -162,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Inputs
+    // 입력 필드 제어
     currentPasswordInput.addEventListener('input', () => {
         if (!currentPasswordInput.value) {
             showHelper(currentPasswordHelper, '*비밀번호를 입력해주세요');
@@ -179,7 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             hideHelper(newPasswordHelper);
         }
-        // 확인 필드랑 일치 여부도 다시 체크 필요할 수 있음
         checkFormValidity();
     });
 
@@ -192,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         checkFormValidity();
     });
 
-    // Submit
+    // 변경사항 저장
     submitBtn.addEventListener('click', async () => {
         if (submitBtn.disabled) return;
 
@@ -236,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 5. Initialize
+    // 5. 초기화
     // ==========================================
     loadUserData();
 });

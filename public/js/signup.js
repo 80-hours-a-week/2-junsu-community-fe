@@ -1,8 +1,8 @@
-// signup.js - 회원가입 로직 (Event Processing First)
+// signup.js - 회원가입 로직
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 커스텀 모달 함수 (Live Reload 영향을 받지 않음)
+    // 커스텀 모달 함수
     function showCustomModal(message, onConfirm) {
         // 오버레이 생성
         const overlay = document.createElement('div');
@@ -66,11 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmBtn.focus();
     }
 
-    // 1. Elements
+    // 1. 요소 가져오기
     const signupForm = document.getElementById('signupForm');
     const signupBtn = document.getElementById('signupBtn');
 
-    // Inputs
+    // 입력 필드
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const passwordConfirmInput = document.getElementById('passwordConfirm');
@@ -79,35 +79,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const profilePreview = document.getElementById('profilePreview');
     const profileImgElement = profilePreview.querySelector('img');
 
-    // Helpers
+    // 헬퍼 텍스트 요소
     const emailHelper = document.getElementById('emailHelper');
     const passwordHelper = document.getElementById('passwordHelper');
     const passwordConfirmHelper = document.getElementById('passwordConfirmHelper');
     const nicknameHelper = document.getElementById('nicknameHelper');
     const profileError = document.getElementById('profileError');
 
-    // Validation Flags
+    // 유효성 검사 플래그
     let isEmailValid = false;
     let isPasswordValid = false;
     let isPasswordConfirmValid = false;
     let isNicknameValid = false;
-    // Profile image is optional in Spec text says "프로필 사진 업로드 안했을 시 ... 추가해주세요" but typically image is optional in CSV. 
-    // However, the spec image has criteria: "프로필 사진 업로드 안했을 시 : *프로필 사진을 추가해주세요".
-    // Wait, strictly reading the spec image text: "프로필 사진 업로드 안했을 시 : *프로필 사진을 추가해주세요" implies it might be required or at least needs a helper.
-    // BUT the CSV said "선택: profileimage".
-    // I will follow the CSV for backend logic (optional), but if the USER SPEC IMAGE says "Upload if not uploaded", maybe they want it required?
-    // Let's look at the "Button Activation" rule in spec image: "1번에 입력한 내용이 모두 작성되고 유효성 검사를 통과한 경우, 버튼이 활성화 된다."
-    // Does "profile image" count as "1번에 입력한 내용"?
-    // The spec layout lists Profile Photo at the top.
-    // And it has a helper text condition.
-    // I will assume it is REQUIRED for the UI validation based on the explicit helper text instruction. 
-    // Or maybe the helper text is just a warning?
-    // Let's implement it as REQUIRED for now to be safe with the "Strict Spec" instruction. 
-    // If the user didn't want it required, they wouldn't ask for a red error message telling to add it.
     let isProfileImageSelected = false;
 
 
-    // Helper Functions
+    // 헬퍼 함수
     function showHelper(element, message) {
         element.textContent = message;
         element.classList.add('show');
@@ -119,20 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkFormValidity() {
-        // Log consistency check
-        // console.log({isEmailValid, isPasswordValid, isPasswordConfirmValid, isNicknameValid, isProfileImageSelected});
-
-        // Wait, does 'isProfileImageSelected' block the button?
-        // CSV says optional. Spec helper text exists. I will make it NOT block the button for now, but show helper text if missing.
-        // Actually, let's treat it as OPTIONAL for the button, but show the helper text as requested.
-        // Re-reading spec: "helper text (밀리지 않는다. 지정된 위치에서 보여짐)... 프로필 사진 업로드 안했을 시 : *프로필 사진을 추가해주세요"
-        // This sounds like a persistent hint.
-        // But usually "Red Text" means error. 
-        // Let's assume it's NOT blocking for now because CSV > Spec for data requirements usually, but...
-        // The user emphasized "Mockup Identity".
-        // Use your judgement: If I require it, I block potentially valid signups. If I don't, I might miss a requirement.
-        // I will make it OPTIONAL (Button active even if false), but showing the text.
-
+        // 프로필 이미지는 버튼 활성화에 영향을 주지 않지만, 안내 문구는 표시함
         if (isEmailValid && isPasswordValid && isPasswordConfirmValid && isNicknameValid) {
             signupBtn.disabled = false;
             signupBtn.classList.add('active');
@@ -142,13 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Validation Logic ---
+    // --- 유효성 검사 로직 ---
 
-    // 1. Profile Image
+    // 1. 프로필 이미지
     profilePreview.addEventListener('click', () => {
-        // If has image, this acts as delete? Spec: "다시 프로필 이미지 버튼을 클릭 후 업로드 하지 않게 되면 -> 프로필 이미지 삭제"
-        // Also "프로필 이미지를 업로드 했을 때 ... 다시 프로필 이미지 버튼을 클릭"
-        // It implies clicking opens the file dialog.
         profileImageInput.click();
     });
 
@@ -160,16 +131,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 profileImgElement.src = e.target.result;
                 profilePreview.classList.add('has-image');
                 isProfileImageSelected = true;
-                hideHelper(profileError); // Hide "Select Image" text
+                hideHelper(profileError); // "프로필 사진을 추가해주세요" 메시지 숨김
                 checkFormValidity();
             };
             reader.readAsDataURL(file);
         } else {
-            // Cancelled or removed
-            // Spec says "다시... 클릭 후 업로드 하지 않게 되면 ... 삭제".
-            // This is tricky with standard file input. If you cancel, it usually keeps old file or clears it depending on browser.
-            // But if user wants to delete, usually we need a clear UX.
-            // For now, if input clear, we clear.
+            // 취소하거나 파일이 없는 경우
             profileImgElement.src = '';
             profilePreview.classList.remove('has-image');
             isProfileImageSelected = false;
@@ -179,11 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // 2. Email
-    // Rules: Cannot be empty. Valid format. Duplicate check (mock for now? or skip).
-    // Spec: "이메일이 비어 있는 경우: *이메일을 입력해주세요"
-    // "올바른 이메일 주소... (예: example@example.com)"
-    // "중복된 이메일... (API check needed)"
+    // 2. 이메일
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     emailInput.addEventListener('focusout', async () => {
@@ -220,32 +183,12 @@ document.addEventListener('DOMContentLoaded', () => {
         checkFormValidity();
     });
 
-    // Clear error on input
+    // 입력 시 에러 메시지 즉시 제거 및 버튼 상태 업데이트
     emailInput.addEventListener('input', () => {
-        // Optional: Hide error immediately on type? Spec says "focusout".
-        // But usually we want to re-validate on input if it was invalid?
-        // Sticking to "focusout" trigger for error showing. 
-        // But button state needs real-time update? 
-        // Spec: "1번에 입력한 내용이 모두 작성되고... 버튼이 활성화".
-        // If I fix a typo, button should light up immediately, not wait for blur.
-        // So I will update `isEmailValid` on input BUT show error on focusout?
-        // Implementing 'input' to clear error and re-check validity logic is safer for UX.
-        // But stricter compliance to spec "focusout" for SHOWING error.
-
         const value = emailInput.value.trim();
         if (emailPattern.test(value)) {
-            // Potentially valid, let's update flag but NOT hide error yet if we act strictly? 
-            // Usually masking error on input is better.
-            // hideHelper(emailHelper); // Let's hide error on input if user types
-            // isEmailValid = true;
-        }
-        // Let's stick to simple logic: Validate on focusout. Update button on focusout?
-        // Or update button on input?
-        // Let's do: Check validity on input for button state, show helper only on focusout.
-
-        if (emailPattern.test(value)) {
             isEmailValid = true;
-            hideHelper(emailHelper); // Better UX
+            hideHelper(emailHelper);
         } else {
             isEmailValid = false;
         }
@@ -253,9 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // 3. Password
-    // Rules: 8-20 chars, Upper+Lower+Num+Special.
-    // Spec: "비밀번호는 8자 이상, 20자 이하이며, 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 포함해야 합니다."
+    // 3. 비밀번호
+    // 규칙: 8-20자, 대문자+소문자+숫자+특수문자 포함
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
 
     passwordInput.addEventListener('focusout', () => {
@@ -272,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         checkFormValidity();
 
-        // Trigger confirm check if confirming exists
+        // 비밀번호 확인 필드도 같이 체크
         if (passwordConfirmInput.value !== '') {
             triggerPasswordConfirmCheck();
         }
@@ -290,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // 4. Password Confirm
+    // 4. 비밀번호 확인
     function triggerPasswordConfirmCheck() {
         const pwd = passwordInput.value;
         const confirm = passwordConfirmInput.value;
@@ -323,17 +265,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // 5. Nickname
-    // Rules: No space, max 10 chars.
-    // Spec: "띄어쓰기불가, 10글자 이내"
-    // "띄어쓰기가 있을 시 : *띄어쓰기를 없애주세요"
-    // "중복 시 : *중복된 닉네임 입니다"
-    // "최대 10자까지만 작성 가능" -> Input maxLength attribute can handle this too?
-
-    // Regex: No spaces. Max 10. No special chars?
-    // CSV says: "공백이나 특수문자를 포함할 수 없습니다."
-    const nicknamePattern = /^[a-zA-Z0-9가-힣]{1,10}$/; // Basic alphanumeric + Korean, no space, no special.
-    // If user types space, regex fails.
+    // 5. 닉네임
+    // 규칙: 공백 불가, 최대 10자, 특수문자 불가
+    const nicknamePattern = /^[a-zA-Z0-9가-힣]{1,10}$/;
 
     nicknameInput.addEventListener('focusout', async () => {
         const value = nicknameInput.value;
@@ -376,7 +310,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     nicknameInput.addEventListener('input', () => {
         const value = nicknameInput.value;
-        // Special handling for length to be instant
         if (value.length > 10) {
             showHelper(nicknameHelper, "* 닉네임은 최대 10자까지 작성 가능합니다.");
             isNicknameValid = false;
@@ -390,11 +323,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // 6. Submit (Prevent default for Step 1)
+    // 6. 회원가입 제출
     const API_BASE_URL = 'http://localhost:8000';
 
-    // 6. Submit (Fetch API Integration)
-    // Changed to 'click' listener on button (type="button") to strictly prevent form submission reload
     signupBtn.addEventListener('click', async () => {
         if (signupBtn.disabled) return;
 
@@ -402,10 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = passwordInput.value;
         const nickname = nicknameInput.value;
 
-        // Backend currently expects a String for profileimage, but no file upload endpoint exists.
-        // We will send null or a placeholder if an image is selected visually, 
-        // to comply with the backend schema.
-        // If we had an uploader, we would upload first -> get URL -> send URL.
+        // 이미지 업로드 기능이 없으므로 null 전송
         const profileimage = isProfileImageSelected ? null : null;
 
         const payload = {
@@ -416,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            console.log('=== Signup Request Starting ===');
+            console.log('=== 회원가입 요청 시작 ===');
             console.log('Payload:', payload);
 
             const response = await fetch(`${API_BASE_URL}/v1/auth/signup`, {
@@ -432,27 +360,23 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Response Data:', data);
 
             if (response.status === 201) {
-                console.log('=== SUCCESS PATH ===');
-                // 커스텀 모달 사용 - 네이티브 alert 대신
+                console.log('=== 회원가입 성공 ===');
                 showCustomModal("회원가입이 완료되었습니다.\n로그인 화면으로 이동합니다.", () => {
                     window.location.href = 'login.html';
                 });
             } else {
-                console.log('=== ERROR PATH ===');
-                console.log('Error message:', data.message);
+                console.log('=== 회원가입 실패 ===');
                 showCustomModal(data.message || "회원가입에 실패했습니다.");
-                console.log('Alert should have displayed. No redirect happening.');
             }
 
         } catch (error) {
-            console.error('=== CATCH PATH ===');
+            console.error('=== 통신 에러 ===');
             console.error('Error details:', error);
             showCustomModal("서버 통신 중 오류가 발생했습니다.");
-            console.log('Catch alert displayed. No redirect happening.');
         }
     });
 
-    // Initialize
-    showHelper(profileError, "* 프로필 사진을 추가해주세요."); // Init state
+    // 초기화
+    showHelper(profileError, "* 프로필 사진을 추가해주세요.");
     checkFormValidity();
 });
