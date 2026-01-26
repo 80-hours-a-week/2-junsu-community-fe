@@ -164,6 +164,51 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Check if current user has already liked this post
+    // NOTE: Backend doesn't support GET /likes (returns 405). 
+    // Relying on 409 Conflict handling in toggleLike as fallback.
+    async function fetchLikeStatus() {
+        // Backend doesn't support this endpoint yet - disabled to avoid 405 errors
+        // When backend adds support for GET /likes or includes isLiked in post detail,
+        // this function can be re-enabled.
+        return;
+
+        /*
+        if (!currentUser) return;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/v1/posts/${postId}/likes`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            console.log('[Like Status] GET response:', response.status);
+
+            if (response.ok) {
+                const result = await response.json();
+                const data = result.data || result;
+
+                if (data.isLiked === true || data.liked === true) {
+                    isLiked = true;
+                    likeBtn.classList.add('liked');
+                    console.log('[Like Status] User has liked this post');
+                } else if (Array.isArray(data)) {
+                    const userLiked = data.some(like =>
+                        String(like.userId) === String(currentUser.userId)
+                    );
+                    if (userLiked) {
+                        isLiked = true;
+                        likeBtn.classList.add('liked');
+                        console.log('[Like Status] Found user in likers list');
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('[Like Status] Error checking like status:', error);
+        }
+        */
+    }
+
     async function toggleLike() {
         if (!currentUser) {
             alert('로그인이 필요합니다.');
@@ -377,11 +422,11 @@ document.addEventListener('DOMContentLoaded', () => {
             commentEl.dataset.id = comment.commentId;
 
             // Determine if current user is owner of comment
-            // Check multiple possible ID locations
+            // SECURITY: Use authorId first, then email comparison as fallback
             const currentUserId = currentUser ? String(currentUser.userId) : null;
-            const currentNickname = currentUser ? currentUser.nickname : null;
+            const currentEmail = currentUser ? currentUser.email : null;
 
-            // Backend may return authorId, userId, or nested author.userId
+            // Backend should return authorId, userId, or nested author.userId
             let commentAuthorId = null;
             if (comment.authorId) {
                 commentAuthorId = String(comment.authorId);
@@ -391,26 +436,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 commentAuthorId = String(comment.author.userId);
             }
 
-            // Fallback: compare by nickname if IDs are not available
-            const commentNickname = comment.authorNickname || comment.nickname || comment.writer;
+            // Get comment author email (writerEmail from backend)
+            const commentEmail = comment.writerEmail || comment.authorEmail ||
+                (comment.author && comment.author.email);
 
-            // Check ownership by ID or by nickname match
+            // Check ownership by ID first, then by email (secure fallback)
             let isOwner = false;
             if (currentUserId && commentAuthorId) {
                 isOwner = currentUserId === commentAuthorId;
-            } else if (currentNickname && commentNickname) {
-                // Fallback to nickname comparison
-                isOwner = currentNickname === commentNickname;
+            } else if (currentEmail && commentEmail) {
+                // Email is unique per user, so this is a secure comparison
+                isOwner = currentEmail === commentEmail;
+                console.log(`[Comment ${index}] Using email comparison: ${currentEmail} === ${commentEmail}`);
+            } else {
+                console.warn(`[Comment ${index}] Missing authorId and email - cannot determine ownership.`);
             }
 
-            console.log(`[Comment ${index}] CommentID: ${comment.commentId}, AuthorID: ${commentAuthorId}, Nickname: ${commentNickname}, CurrentUserID: ${currentUserId}, CurrentNickname: ${currentNickname}, isOwner: ${isOwner}`);
+            console.log(`[Comment ${index}] CommentID: ${comment.commentId}, AuthorID: ${commentAuthorId}, Email: ${commentEmail}, CurrentUserID: ${currentUserId}, isOwner: ${isOwner}`);
             console.log(`[Comment ${index}] Full comment object:`, comment);
+
+            // Get author name for display (try multiple fields)
+            const authorDisplayName = comment.authorNickname || comment.nickname || comment.writer || '익명';
 
             commentEl.innerHTML = `
                 <div class="comment-header">
                     <div class="comment-author-info">
                         <div class="comment-avatar" ${comment.authorProfileImage ? `style="background-image: url(${comment.authorProfileImage})"` : ''}></div>
-                        <span class="comment-author-name">${comment.authorNickname || comment.nickname || '익명'}</span>
+                        <span class="comment-author-name">${authorDisplayName}</span>
                         <span class="comment-date">${formatDate(comment.createdAt)}</span>
                     </div>
                     ${isOwner ? `
@@ -474,6 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function init() {
         loadUserFromStorage(); // Load instantly from local storage
         await fetchPostDetail();
+        await fetchLikeStatus(); // Check if user already liked this post
         fetchComments();
         fetchCurrentUser(); // Background refresh user data
     }
