@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isLoading = false;
     let isLastPage = false;
 
-    // Helper functions
+    // 유틸리티 함수
     function formatNumber(num) {
         if (!num) return '0';
         if (num >= 100000) return (num / 1000).toFixed(0) + 'k';
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
     }
 
-    // 1. Fetch Posts from Backend
+    // 1. 백엔드에서 게시글 목록 가져오기
     async function fetchPosts() {
         if (isLoading || isLastPage) return;
 
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 더 이상 불러올 데이터가 없으면 중단
                 if (offset >= totalCount) {
                     isLastPage = true;
-                    // remove scroll trigger or just stop observing
+                    // 스크롤 트리거 숨김 또는 감시 중지
                     if (scrollTrigger) scrollTrigger.style.display = 'none';
                 }
             } else {
@@ -83,14 +83,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 2. Fetch User Profile
+    // 2. 사용자 프로필 가져오기
     async function fetchUserProfile() {
         try {
             const response = await fetch(`${API_BASE_URL}/v1/auth/me`, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                credentials: 'include' // Send session cookie
+                credentials: 'include' // 세션 쿠키 포함
             });
 
             const result = await response.json();
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (imageUrl) {
                 profileIcon.style.backgroundImage = `url(${imageUrl})`;
             } else {
-                profileIcon.style.backgroundColor = '#7F6AEE'; // Default color for logged in user
+                profileIcon.style.backgroundColor = '#7F6AEE'; // 로그인한 사용자 기본 색상
             }
         }
     }
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Create HTML Element
+    // HTML 요소 생성
     function createPostElement(post) {
         const card = document.createElement('div');
         card.className = 'post-card';
@@ -138,9 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = `post_detail.html?id=${post.postId}`;
         };
 
-        // Backend response mapping
-        // Currently backend doesn't return likes/comments count, so mock them as 0 or use random if desired.
-        // For now, default to 0 as planned.
+        // 백엔드 응답 매핑
+        // 현재 백엔드가 좋아요/댓글 수를 반환하지 않아 0으로 기본 설정
         const likesStr = formatNumber(post.likeCount || 0);
         const commentsStr = formatNumber(post.commentCount || 0);
         const viewsStr = formatNumber(post.viewCount || 0);
@@ -168,8 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return card;
     }
 
-    // 3. Event Listeners
-    // Dropdown toggle
+    // 3. 이벤트 리스너
+    // 드롭다운 토글
     if (profileIcon) {
         profileIcon.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -177,14 +176,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Close dropdown on outside click
+    // 외부 클릭 시 드롭다운 닫기
     document.addEventListener('click', (e) => {
         if (profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileIcon) {
             profileDropdown.classList.remove('show');
         }
     });
 
-    // Logout
+    // 로그아웃
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -192,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Inline Intersection Observer
+    // 인터섹션 옵저버 (무한 스크롤)
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -205,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(scrollTrigger);
     }
 
-    // Initialize
-    fetchUserProfile(); // Check login status & Load profile
-    fetchPosts(); // Load initial posts
+    // 초기화
+    fetchUserProfile(); // 로그인 상태 확인 및 프로필 로드
+    fetchPosts(); // 초기 게시글 로드
 });

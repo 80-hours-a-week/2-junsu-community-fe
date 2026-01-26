@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 1. Elements
+    // 1. DOM 요소
     // ==========================================
-    // Post elements
+    // 게시글 요소
     const postTitle = document.getElementById('postTitle');
     const authorAvatar = document.getElementById('authorAvatar');
     const authorName = document.getElementById('authorName');
@@ -32,30 +32,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewCount = document.getElementById('viewCount');
     const commentCountEl = document.getElementById('commentCount');
 
-    // Comment elements
+    // 댓글 요소
     const commentInput = document.getElementById('commentInput');
     const commentSubmitBtn = document.getElementById('commentSubmitBtn');
     const commentList = document.getElementById('commentList');
 
-    // Modal elements
+    // 모달 요소
     const deleteModal = document.getElementById('deleteModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalCancelBtn = document.getElementById('modalCancelBtn');
     const modalConfirmBtn = document.getElementById('modalConfirmBtn');
 
-    // State
+    // 상태 변수
     let currentPost = null;
     let currentUser = null;
     let isLiked = false;
     let editingCommentId = null;
 
-    // Load User from LocalStorage (Sync) to avoid delay
+    // 로컬스토리지에서 사용자 정보 로드 (동기 처리 - 딜레이 방지)
     function loadUserFromStorage() {
         const userStr = localStorage.getItem('user');
         if (userStr) {
             currentUser = JSON.parse(userStr);
         }
-        // Also check if individual id exists (robustness)
+        // 개별 ID가 존재하는 경우도 확인 (안정성)
         if (!currentUser && localStorage.getItem('userId')) {
             currentUser = {
                 userId: localStorage.getItem('userId'),
@@ -66,7 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ... Helper Functions ...
+    // ==========================================
+    // 유틸리티 함수
+    // ==========================================
     function formatCount(num) {
         if (num >= 100000) return Math.floor(num / 1000) + 'k';
         if (num >= 10000) return Math.floor(num / 1000) + 'k';
@@ -103,9 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
         deleteModal.style.display = 'none';
     }
 
-    // ... API Functions ...
+    // ==========================================
+    // API 함수
+    // ==========================================
 
-    // Fetch latest user info (Async) - updates currentUser if changed
+    // 현재 사용자 정보 조회 (비동기) - 변경사항 있으면 업데이트
     async function fetchCurrentUser() {
         try {
             const response = await fetch(`${API_BASE_URL}/v1/auth/me`, {
@@ -116,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const remoteUser = result.data || result;
                 if (remoteUser) {
                     currentUser = remoteUser;
-                    // Update storage
+                    // 스토리지 업데이트
                     localStorage.setItem('user', JSON.stringify(currentUser));
                     if (currentUser.userId) localStorage.setItem('userId', currentUser.userId);
                 }
@@ -164,13 +168,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Check if current user has already liked this post
-    // NOTE: Backend doesn't support GET /likes (returns 405). 
-    // Relying on 409 Conflict handling in toggleLike as fallback.
+    // 현재 사용자가 이미 좋아요한 게시글인지 확인
+    // 참고: 백엔드가 GET /likes를 지원하지 않음 (405 반환)
+    // toggleLike에서 409 Conflict 처리로 대체
     async function fetchLikeStatus() {
-        // Backend doesn't support this endpoint yet - disabled to avoid 405 errors
-        // When backend adds support for GET /likes or includes isLiked in post detail,
-        // this function can be re-enabled.
+        // 백엔드가 아직 이 엔드포인트를 지원하지 않음 - 405 오류 방지를 위해 비활성화
+        // 백엔드에서 GET /likes 지원 또는 게시글 상세에 isLiked 포함 시 재활성화 가능
         return;
 
         /*
@@ -219,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('[Like] Toggle Like called. Current isLiked:', isLiked);
 
         try {
-            // Determine method based on current state
+            // 현재 상태에 따라 메서드 결정
             const method = isLiked ? 'DELETE' : 'POST';
 
             const response = await fetch(`${API_BASE_URL}/v1/posts/${postId}/likes`, {
@@ -229,23 +232,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             console.log('[Like] Request:', method, 'Status:', response.status);
 
-            // Handle 409 Conflict (ALREADY_LIKED) - just correct our state, don't retry
+            // 409 Conflict (ALREADY_LIKED) 처리 - 상태만 교정하고 재시도 안함
             if (response.status === 409) {
                 console.log('[Like] Got 409 Conflict - already liked. Correcting state.');
                 isLiked = true;
                 likeBtn.classList.add('liked');
-                // Don't change count - backend already has the like counted
+                // 카운트 변경 안함 - 백엔드에 이미 좋아요 카운트됨
                 return;
             }
 
             if (response.ok || response.status === 200 || response.status === 201 || response.status === 204) {
-                // Toggle the state
+                // 상태 토글
                 isLiked = (method === 'POST');
                 likeBtn.classList.toggle('liked', isLiked);
 
                 console.log('[Like] Success! isLiked is now:', isLiked);
 
-                // Update count locally
+                // 로컬 카운트 업데이트
                 let count = parseInt(likeCount.textContent.replace(/[^0-9]/g, '')) || 0;
                 if (method === 'POST') count++;
                 else count--;
@@ -314,9 +317,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 editingCommentId = null;
                 fetchComments();
 
-                // Update comment count
+                // 댓글 수 업데이트
                 let count = parseInt(commentCountEl.textContent.replace(/[^0-9]/g, '')) || 0;
-                if (!editingCommentId) { // If new comment
+                if (!editingCommentId) { // 새 댓글인 경우
                     commentCountEl.textContent = formatCount(count + 1);
                 }
             } else {
@@ -347,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 4. Render Functions
+    // 4. 렌더링 함수
     // ==========================================
     function renderPost() {
         if (!currentPost) return;
@@ -357,14 +360,14 @@ document.addEventListener('DOMContentLoaded', () => {
         authorName.textContent = currentPost.writer || '익명';
         postDate.textContent = currentPost.createdAt ? formatDate(currentPost.createdAt) : '';
 
-        // Author Avatar - Mock or Real
+        // 작성자 프로필 이미지
         if (currentPost.authorProfileImage) {
             authorAvatar.style.backgroundImage = `url(${currentPost.authorProfileImage})`;
         } else {
             authorAvatar.style.backgroundColor = '#D9D9D9';
         }
 
-        // Image
+        // 이미지
         if (currentPost.fileUrl) {
             postImage.src = currentPost.fileUrl;
             postImageContainer.style.display = 'block';
@@ -372,16 +375,16 @@ document.addEventListener('DOMContentLoaded', () => {
             postImageContainer.style.display = 'none';
         }
 
-        // Stats
+        // 통계
         likeCount.textContent = formatCount(currentPost.likeCount || 0);
         viewCount.textContent = formatCount(currentPost.viewCount || 0);
         commentCountEl.textContent = formatCount(currentPost.commentCount || 0);
 
         console.log('[Post] Full post data:', currentPost);
 
-        // Ownership Check (Compare userId)
+        // 소유권 확인 (userId 비교)
         const currentUserId = currentUser ? String(currentUser.userId) : null;
-        // Check multiple possible fields for post author ID
+        // 게시글 작성자 ID를 다양한 필드에서 확인
         let postAuthorId = null;
         if (currentPost.author && currentPost.author.userId) {
             postAuthorId = String(currentPost.author.userId);
@@ -399,7 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
             postActions.style.display = 'none';
         }
 
-        // Like Status - check multiple possible fields
+        // 좋아요 상태 - 다양한 필드 확인
         if (currentPost.isLiked === true || currentPost.liked === true) {
             isLiked = true;
             likeBtn.classList.add('liked');
@@ -421,12 +424,12 @@ document.addEventListener('DOMContentLoaded', () => {
             commentEl.className = 'comment-item';
             commentEl.dataset.id = comment.commentId;
 
-            // Determine if current user is owner of comment
-            // SECURITY: Use authorId first, then email comparison as fallback
+            // 현재 사용자가 댓글 작성자인지 확인
+            // 보안: authorId를 우선 확인, 없으면 이메일 비교로 대체
             const currentUserId = currentUser ? String(currentUser.userId) : null;
             const currentEmail = currentUser ? currentUser.email : null;
 
-            // Backend should return authorId, userId, or nested author.userId
+            // 백엔드가 authorId, userId, 또는 중첩된 author.userId를 반환해야 함
             let commentAuthorId = null;
             if (comment.authorId) {
                 commentAuthorId = String(comment.authorId);
@@ -436,16 +439,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 commentAuthorId = String(comment.author.userId);
             }
 
-            // Get comment author email (writerEmail from backend)
+            // 댓글 작성자 이메일 가져오기 (백엔드에서 writerEmail)
             const commentEmail = comment.writerEmail || comment.authorEmail ||
                 (comment.author && comment.author.email);
 
-            // Check ownership by ID first, then by email (secure fallback)
+            // ID로 소유권 확인, 없으면 이메일로 확인 (안전한 대체 방법)
             let isOwner = false;
             if (currentUserId && commentAuthorId) {
                 isOwner = currentUserId === commentAuthorId;
             } else if (currentEmail && commentEmail) {
-                // Email is unique per user, so this is a secure comparison
+                // 이메일은 사용자보다 고유하므로 안전한 비교 가능
                 isOwner = currentEmail === commentEmail;
                 console.log(`[Comment ${index}] Using email comparison: ${currentEmail} === ${commentEmail}`);
             } else {
@@ -455,7 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`[Comment ${index}] CommentID: ${comment.commentId}, AuthorID: ${commentAuthorId}, Email: ${commentEmail}, CurrentUserID: ${currentUserId}, isOwner: ${isOwner}`);
             console.log(`[Comment ${index}] Full comment object:`, comment);
 
-            // Get author name for display (try multiple fields)
+            // 표시할 작성자 이름 가져오기 (다양한 필드 시도)
             const authorDisplayName = comment.authorNickname || comment.nickname || comment.writer || '익명';
 
             commentEl.innerHTML = `
@@ -475,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="comment-content">${comment.content}</div>
             `;
 
-            // Bind events for this comment
+            // 이 댓글에 이벤트 바인딩
             if (isOwner) {
                 const editBtn = commentEl.querySelector('.edit-comment-btn');
                 const deleteBtn = commentEl.querySelector('.delete-comment-btn');
@@ -487,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     commentSubmitBtn.textContent = '댓글 수정';
                     commentSubmitBtn.disabled = false;
                     commentSubmitBtn.classList.add('active');
-                    // Scroll to input
+                    // 입력창으로 스크롤
                     commentInput.scrollIntoView({ behavior: 'smooth' });
                 });
 
@@ -502,7 +505,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ... Event Listeners (unchanged mostly) ...
+    // ==========================================
+    // 이벤트 리스너
+    // ==========================================
     likeBtn.addEventListener('click', toggleLike);
     editPostBtn.addEventListener('click', () => {
         window.location.href = `post_edit.html?id=${postId}`;
@@ -522,13 +527,13 @@ document.addEventListener('DOMContentLoaded', () => {
     commentSubmitBtn.addEventListener('click', submitComment);
 
 
-    // Initialize
+    // 초기화
     async function init() {
-        loadUserFromStorage(); // Load instantly from local storage
+        loadUserFromStorage(); // 로컬스토리지에서 즉시 로드
         await fetchPostDetail();
-        await fetchLikeStatus(); // Check if user already liked this post
+        await fetchLikeStatus(); // 사용자가 이미 좋아요한 게시글인지 확인
         fetchComments();
-        fetchCurrentUser(); // Background refresh user data
+        fetchCurrentUser(); // 백그라운드에서 사용자 데이터 새로고침
     }
 
     init();
