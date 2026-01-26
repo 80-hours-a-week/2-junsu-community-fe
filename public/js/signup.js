@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // "중복된 이메일... (API check needed)"
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    emailInput.addEventListener('focusout', () => {
+    emailInput.addEventListener('focusout', async () => {
         const value = emailInput.value.trim();
         if (value === '') {
             showHelper(emailHelper, "* 이메일을 입력해주세요.");
@@ -195,9 +195,27 @@ document.addEventListener('DOMContentLoaded', () => {
             showHelper(emailHelper, "* 올바른 이메일 주소 형식을 입력해주세요. (예: example@example.com)");
             isEmailValid = false;
         } else {
-            // TODO: API Duplicate Check
-            hideHelper(emailHelper);
-            isEmailValid = true;
+            // API 중복 체크
+            try {
+                const response = await fetch(`http://localhost:8000/v1/auth/emails/availability?email=${encodeURIComponent(value)}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    hideHelper(emailHelper);
+                    isEmailValid = true;
+                } else if (response.status === 409) {
+                    showHelper(emailHelper, "* 이미 사용 중인 이메일입니다.");
+                    isEmailValid = false;
+                } else {
+                    showHelper(emailHelper, data.message || "* 이메일 확인 중 오류가 발생했습니다.");
+                    isEmailValid = false;
+                }
+            } catch (error) {
+                console.error('Email check error:', error);
+                // 네트워크 오류 시 일단 통과 (회원가입 시 다시 검증됨)
+                hideHelper(emailHelper);
+                isEmailValid = true;
+            }
         }
         checkFormValidity();
     });
@@ -317,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nicknamePattern = /^[a-zA-Z0-9가-힣]{1,10}$/; // Basic alphanumeric + Korean, no space, no special.
     // If user types space, regex fails.
 
-    nicknameInput.addEventListener('focusout', () => {
+    nicknameInput.addEventListener('focusout', async () => {
         const value = nicknameInput.value;
         if (value === '') {
             showHelper(nicknameHelper, "* 닉네임을 입력해주세요.");
@@ -329,12 +347,29 @@ document.addEventListener('DOMContentLoaded', () => {
             showHelper(nicknameHelper, "* 닉네임은 최대 10자까지 작성 가능합니다.");
             isNicknameValid = false;
         } else if (!nicknamePattern.test(value)) {
-            // Catch all other special chars
             showHelper(nicknameHelper, "* 닉네임 형식이 올바르지 않습니다. (공백/특수문자 불가)");
             isNicknameValid = false;
         } else {
-            hideHelper(nicknameHelper);
-            isNicknameValid = true;
+            // API 중복 체크
+            try {
+                const response = await fetch(`http://localhost:8000/v1/auth/nicknames/availability?nickname=${encodeURIComponent(value)}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    hideHelper(nicknameHelper);
+                    isNicknameValid = true;
+                } else if (response.status === 409) {
+                    showHelper(nicknameHelper, "* 이미 사용 중인 닉네임입니다.");
+                    isNicknameValid = false;
+                } else {
+                    showHelper(nicknameHelper, data.message || "* 닉네임 확인 중 오류가 발생했습니다.");
+                    isNicknameValid = false;
+                }
+            } catch (error) {
+                console.error('Nickname check error:', error);
+                hideHelper(nicknameHelper);
+                isNicknameValid = true;
+            }
         }
         checkFormValidity();
     });
