@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('=== Profile Update Request ===');
             console.log('Payload:', payload);
 
-            const response = await fetch(`${API_BASE_URL}/v1/users/${currentUser.userId}`, {
+            const response = await fetch(`${API_BASE_URL}/v1/users/me`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

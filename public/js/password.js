@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch(`${API_BASE_URL}/v1/users/${currentUser.userId}/password`, {
+            const response = await fetch(`${API_BASE_URL}/v1/users/me/password`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
