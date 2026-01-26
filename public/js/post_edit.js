@@ -8,8 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const postId = urlParams.get('id');
 
     if (!postId) {
-        alert('잘못된 접근입니다.');
-        window.location.href = 'index.html';
+        showCustomModal('잘못된 접근입니다.', () => {
+            window.location.href = 'index.html';
+        });
         return;
     }
 
@@ -123,8 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
-                alert('게시글을 찾을 수 없습니다.');
-                window.location.href = 'index.html';
+                showCustomModal('게시글을 찾을 수 없습니다.', () => {
+                    window.location.href = 'index.html';
+                });
                 return;
             }
 
@@ -149,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Failed to load post:', error);
-            alert('게시글을 불러오는데 실패했습니다.');
+            showCustomModal('게시글을 불러오는데 실패했습니다.');
         }
     }
 

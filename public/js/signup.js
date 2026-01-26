@@ -405,14 +405,14 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 console.log('=== ERROR PATH ===');
                 console.log('Error message:', data.message);
-                alert(data.message || "회원가입에 실패했습니다.");
+                showCustomModal(data.message || "회원가입에 실패했습니다.");
                 console.log('Alert should have displayed. No redirect happening.');
             }
 
         } catch (error) {
             console.error('=== CATCH PATH ===');
             console.error('Error details:', error);
-            alert("서버 통신 중 오류가 발생했습니다.");
+            showCustomModal("서버 통신 중 오류가 발생했습니다.");
             console.log('Catch alert displayed. No redirect happening.');
         }
     });

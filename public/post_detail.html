@@ -14,7 +14,13 @@
         <a href="/posts" class="back-button">&lt;</a>
         <span class="logo">아무 말 대잔치</span>
         <div class="header-content">
-            <div class="profile-icon"></div>
+            <div class="profile-icon" id="profileIcon"></div>
+            <!-- 드롭다운 메뉴 -->
+            <div class="profile-dropdown" id="profileDropdown">
+                <a href="profile.html" class="dropdown-item">회원정보수정</a>
+                <a href="password.html" class="dropdown-item">비밀번호수정</a>
+                <a href="#" class="dropdown-item" id="logoutBtn">로그아웃</a>
+            </div>
         </div>
     </header>
 
@@ -92,6 +98,7 @@
         </div>
     </div>
 
+    <script src="js/modal.js"></script>
     <script src="js/post_detail.js"></script>
 </body>
 

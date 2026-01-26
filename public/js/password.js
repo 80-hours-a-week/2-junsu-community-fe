@@ -115,8 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
-                alert('로그인이 필요합니다.');
-                window.location.href = 'login.html';
+                showCustomModal('로그인이 필요합니다.', () => {
+                    window.location.href = 'login.html';
+                });
                 return;
             }
 
@@ -153,8 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 credentials: 'include'
             });
-            alert('로그아웃 되었습니다.');
-            window.location.href = 'login.html';
+            showCustomModal('로그아웃 되었습니다.', () => {
+                window.location.href = 'login.html';
+            });
         } catch (error) {
             console.error('Logout failed:', error);
         }
@@ -200,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch(`${API_BASE_URL}/v1/users/me/password`, {
+            const response = await fetch(`${API_BASE_URL}/v1/users/${currentUser.userId}/password`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -224,12 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.code === 'INVALID_CURRENT_PASSWORD') {
                     showHelper(currentPasswordHelper, '*현재 비밀번호가 일치하지 않습니다.');
                 } else {
-                    alert(data.message || '비밀번호 변경에 실패했습니다.');
+                    showCustomModal(data.message || '비밀번호 변경에 실패했습니다.');
                 }
             }
         } catch (error) {
             console.error('Password change error:', error);
-            alert('서버 통신 중 오류가 발생했습니다.');
+            showCustomModal('서버 통신 중 오류가 발생했습니다.');
         }
     });
 

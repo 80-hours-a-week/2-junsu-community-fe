@@ -123,8 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 credentials: 'include'
             });
-            alert('로그아웃 되었습니다.');
-            window.location.href = '/login.html';
+            showCustomModal('로그아웃 되었습니다.', () => {
+                window.location.href = '/login.html';
+            });
         } catch (error) {
             console.error('Logout failed:', error);
         }

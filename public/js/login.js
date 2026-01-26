@@ -113,11 +113,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('accessToken', token); // 호환성 유지
                 }
 
-                alert(`로그인 성공! ${result.message}`);
-                window.location.href = '/posts';
+                showCustomModal('로그인 성공!', () => {
+                    window.location.href = '/posts';
+                });
             } else {
                 // 로그인 실패 (서버에서 보낸 에러 메시지 표시)
-                alert(`로그인 실패: ${result.message}`);
+                showCustomModal(`로그인 실패: ${result.message}`);
                 loginBtn.textContent = '로그인';
                 loginBtn.disabled = false;
                 loginBtn.classList.add('active');
@@ -125,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             // 네트워크 에러 등
             console.error('Login error:', error);
-            alert('서버 연결에 실패했습니다. 백엔드 서버가 실행 중인지 확인해주세요.');
+            showCustomModal('서버 연결에 실패했습니다. 백엔드 서버가 실행 중인지 확인해주세요.');
             loginBtn.textContent = '로그인';
             loginBtn.disabled = false;
             loginBtn.classList.add('active');

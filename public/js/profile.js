@@ -82,8 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 credentials: 'include'
             });
-            alert('로그아웃 되었습니다.');
-            window.location.href = 'login.html';
+            showCustomModal('로그아웃 되었습니다.', () => {
+                window.location.href = 'login.html';
+            });
         } catch (error) {
             console.error('Logout failed:', error);
         }
@@ -99,8 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
-                alert('로그인이 필요합니다.');
-                window.location.href = 'login.html';
+                showCustomModal('로그인이 필요합니다.', () => {
+                    window.location.href = 'login.html';
+                });
                 return;
             }
 
@@ -124,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Failed to load user:', error);
-            alert('사용자 정보를 불러오는데 실패했습니다.');
+            showCustomModal('사용자 정보를 불러오는데 실패했습니다.');
         }
     }
 
@@ -169,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('=== Profile Update Request ===');
             console.log('Payload:', payload);
 
-            const response = await fetch(`${API_BASE_URL}/v1/users/me`, {
+            const response = await fetch(`${API_BASE_URL}/v1/users/${currentUser.userId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -222,14 +224,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                alert('회원 탈퇴가 완료되었습니다.');
-                window.location.href = 'login.html';
+                showCustomModal('회원 탈퇴가 완료되었습니다.', () => {
+                    window.location.href = 'login.html';
+                });
             } else {
-                alert('회원 탈퇴에 실패했습니다.');
+                showCustomModal('회원 탈퇴에 실패했습니다.');
             }
         } catch (error) {
             console.error('Withdrawal Error:', error);
-            alert('회원 탈퇴 중 오류가 발생했습니다.');
+            showCustomModal('회원 탈퇴 중 오류가 발생했습니다.');
         }
     });
 

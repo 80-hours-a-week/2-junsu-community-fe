@@ -140,3 +140,13 @@ h2 {
     border-bottom: 2px solid var(--primary-color);
     padding-bottom: 10px;
 }
+
+/* 뒤로가기 버튼 */
+.back-button {
+    text-decoration: none;
+    font-size: 24px;
+    color: #333;
+    position: absolute;
+    left: 20px;
+    font-weight: bold;
+}

@@ -8,8 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const postId = urlParams.get('id');
 
     if (!postId) {
-        alert('잘못된 접근입니다.');
-        window.location.href = '/posts';
+        showCustomModal('잘못된 접근입니다.', () => {
+            window.location.href = '/posts';
+        });
         return;
     }
 
@@ -42,6 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalTitle = document.getElementById('modalTitle');
     const modalCancelBtn = document.getElementById('modalCancelBtn');
     const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+
+    // 프로필 드롭다운 요소
+    const profileIcon = document.getElementById('profileIcon');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const logoutBtn = document.getElementById('logoutBtn');
 
     // 상태 변수
     let currentPost = null;
@@ -137,8 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
-                alert('게시글을 찾을 수 없습니다.');
-                window.location.href = '/posts'; // index.html -> /posts
+                showCustomModal('게시글을 찾을 수 없습니다.', () => {
+                    window.location.href = '/posts';
+                });
                 return;
             }
 
@@ -147,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPost();
         } catch (error) {
             console.error('Failed to fetch post:', error);
-            alert('게시글을 불러오는데 실패했습니다.');
+            showCustomModal('게시글을 불러오는데 실패했습니다.');
         }
     }
 
@@ -214,8 +221,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function toggleLike() {
         if (!currentUser) {
-            alert('로그인이 필요합니다.');
-            window.location.href = '/login.html';
+            showCustomModal('로그인이 필요합니다.', () => {
+                window.location.href = '/login.html';
+            });
             return;
         }
 
@@ -271,10 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                alert('게시글이 삭제되었습니다.');
-                window.location.href = '/posts';
+                showCustomModal('게시글이 삭제되었습니다.', () => {
+                    window.location.href = '/posts';
+                });
             } else {
-                alert('삭제에 실패했습니다.');
+                showCustomModal('삭제에 실패했습니다.');
             }
         } catch (error) {
             console.error('Failed to delete post:', error);
@@ -286,8 +295,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!content) return;
 
         if (!currentUser) {
-            alert('로그인이 필요합니다.');
-            window.location.href = '/login.html';
+            showCustomModal('로그인이 필요합니다.', () => {
+                window.location.href = '/login.html';
+            });
             return;
         }
 
@@ -323,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     commentCountEl.textContent = formatCount(count + 1);
                 }
             } else {
-                alert('댓글 등록에 실패했습니다.');
+                showCustomModal('댓글 등록에 실패했습니다.');
             }
         } catch (error) {
             console.error('Error submitting comment:', error);
@@ -342,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let count = parseInt(commentCountEl.textContent.replace(/[^0-9]/g, '')) || 0;
                 commentCountEl.textContent = formatCount(Math.max(0, count - 1));
             } else {
-                alert('댓글 삭제에 실패했습니다.');
+                showCustomModal('댓글 삭제에 실패했습니다.');
             }
         } catch (error) {
             console.error('Failed to delete comment:', error);
@@ -538,6 +548,39 @@ document.addEventListener('DOMContentLoaded', () => {
         commentSubmitBtn.classList.toggle('active', hasContent);
     });
     commentSubmitBtn.addEventListener('click', submitComment);
+
+    // 프로필 드롭다운 이벤트
+    if (profileIcon) {
+        profileIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+    }
+
+    // 외부 클릭 시 드롭다운 닫기
+    document.addEventListener('click', (e) => {
+        if (profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileIcon) {
+            profileDropdown.classList.remove('show');
+        }
+    });
+
+    // 로그아웃
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await fetch(`${API_BASE_URL}/v1/auth/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                showCustomModal('로그아웃 되었습니다.', () => {
+                    window.location.href = '/login.html';
+                });
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
+        });
+    }
 
 
     // 초기화
