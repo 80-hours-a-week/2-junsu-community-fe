@@ -120,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentUser = result.data || result;
 
             if (currentUser.profileImage) {
+                localStorage.setItem('profileImage', currentUser.profileImage);
                 profileIcon.style.backgroundImage = `url(${currentUser.profileImage})`;
             }
         } catch (error) {
@@ -232,5 +233,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 5. 초기화
     // ==========================================
+
+    // 로컬 스토리지에서 먼저 로드 (깜박임 방지)
+    const cachedProfileImage = localStorage.getItem('profileImage');
+    if (cachedProfileImage && profileIcon) {
+        profileIcon.style.backgroundImage = `url(${cachedProfileImage})`;
+    }
+
     loadUserData();
 });

@@ -61,6 +61,64 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
+    // 0. 헤더 프로필 설정
+    // ==========================================
+    const profileIcon = document.getElementById('profileIcon');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    async function fetchUserProfile() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/v1/auth/me`, {
+                credentials: 'include'
+            });
+            if (response.ok) {
+                const result = await response.json();
+                const user = result.data || result;
+                if (user.profileImage) {
+                    localStorage.setItem('profileImage', user.profileImage);
+                    if (profileIcon) profileIcon.style.backgroundImage = `url(${user.profileImage})`;
+                } else if (profileIcon) {
+                    profileIcon.style.backgroundColor = '#7F6AEE';
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load user profile:', error);
+        }
+    }
+
+    // 초기 로드 시 캐시된 이미지 먼저 보여주기
+    const cachedProfileImage = localStorage.getItem('profileImage');
+    if (cachedProfileImage && profileIcon) {
+        profileIcon.style.backgroundImage = `url(${cachedProfileImage})`;
+    }
+
+    // 드롭다운 이벤트
+    if (profileIcon) {
+        profileIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+        document.addEventListener('click', (e) => {
+            if (!profileDropdown.contains(e.target) && e.target !== profileIcon) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await fetch(`${API_BASE_URL}/v1/auth/logout`, { method: 'POST', credentials: 'include' });
+                showCustomModal('로그아웃 되었습니다.', () => { window.location.href = '/login.html'; });
+            } catch (e) { console.error(e); }
+        });
+    }
+
+    fetchUserProfile();
+
+    // ==========================================
     // 1. 요소 가져오기
     // ==========================================
     const postWriteForm = document.getElementById('postWriteForm');
@@ -150,13 +208,44 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 이미지: 백엔드 업로드 API 미구현으로 null 전송
-        const postImage = null;
+        // 1. 이미지 업로드 (만약 선택된 파일이 있다면)
+        let postImage = null;
+        if (imageInput.files[0]) {
+            try {
+                const formData = new FormData();
+                formData.append('file', imageInput.files[0]);
+                formData.append('type', 'post');
+
+                // 주의: 파일 업로드는 credentials: 'include'가 필요할 수 있음 (로그인 체크가 있다면)
+                // 하지만 headers에 'Content-Type'을 설정하면 안됨 (브라우저가 자동으로 Boundary 설정)
+                const uploadResponse = await fetch(`${API_BASE_URL}/v1/files/upload`, {
+                    method: 'POST',
+                    headers: {}, // Content-Type 자동 설정을 위해 빈 객체 또는 생략
+                    credentials: 'include',
+                    body: formData
+                });
+
+                if (!uploadResponse.ok) {
+                    const errData = await uploadResponse.json();
+                    showHelper(errData.message || "이미지 업로드 실패");
+                    return;
+                }
+
+                const uploadData = await uploadResponse.json();
+                postImage = uploadData.fileUrl;
+                console.log("Uploaded Image URL:", postImage);
+
+            } catch (error) {
+                console.error('Image upload error:', error);
+                showHelper("이미지 업로드 중 오류가 발생했습니다.");
+                return;
+            }
+        }
 
         const payload = {
             title: title,
             content: content,
-            postImage: postImage
+            fileUrl: postImage
         };
 
         try {

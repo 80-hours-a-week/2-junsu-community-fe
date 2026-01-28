@@ -21,6 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return num.toString();
     }
 
+    // 로컬 스토리지에서 사용자 정보 즉시 로드 (깜박임 방지)
+    function loadUserFromStorage() {
+        const profileImage = localStorage.getItem('profileImage');
+        if (profileImage) {
+            updateProfileIcon(profileImage);
+        }
+    }
+
     function formatDate(dateString) {
         if (!dateString) return '';
         const d = new Date(dateString);
@@ -96,7 +104,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (response.ok) {
-                updateProfileIcon(result.data.profileimage);
+                // 최신 정보로 업데이트 및 스토리지 갱신
+                const user = result.data || result;
+                if (user.profileImage) {
+                    localStorage.setItem('profileImage', user.profileImage);
+                    updateProfileIcon(user.profileImage);
+                }
             } else {
                 console.warn('Login required or session expired');
             }
@@ -204,6 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 초기화
-    fetchUserProfile(); // 로그인 상태 확인 및 프로필 로드
+    loadUserFromStorage(); // 스토리지에서 먼저 로드해서 깜박임 방지
+    fetchUserProfile(); // 백엔드에서 최신 정보 확인
     fetchPosts(); // 초기 게시글 로드
 });

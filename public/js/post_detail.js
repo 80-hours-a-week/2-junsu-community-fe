@@ -70,6 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 profileImage: localStorage.getItem('profileImage')
             };
         }
+
+        // 헤더 프로필 즉시 적용
+        const cachedProfileImage = localStorage.getItem('profileImage') || (currentUser && currentUser.profileImage);
+        if (cachedProfileImage && profileIcon) {
+            profileIcon.style.backgroundImage = `url(${cachedProfileImage})`;
+        }
     }
 
     // ==========================================
@@ -129,6 +135,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     // 스토리지 업데이트
                     localStorage.setItem('user', JSON.stringify(currentUser));
                     if (currentUser.userId) localStorage.setItem('userId', currentUser.userId);
+                    if (currentUser.profileImage) localStorage.setItem('profileImage', currentUser.profileImage);
+
+                    // 헤더 프로필 아이콘 업데이트
+                    if (profileIcon && currentUser.profileImage) {
+                        profileIcon.style.backgroundImage = `url(${currentUser.profileImage})`;
+                    } else if (profileIcon) {
+                        profileIcon.style.backgroundColor = '#7F6AEE';
+                    }
                 }
             }
         } catch (error) {

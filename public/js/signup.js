@@ -335,14 +335,38 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = passwordInput.value;
         const nickname = nicknameInput.value;
 
-        // 이미지 업로드 기능이 없으므로 null 전송
-        const profileimage = isProfileImageSelected ? null : null;
+        let profileImageUrl = null;
+        if (isProfileImageSelected && profileImageInput.files[0]) {
+            try {
+                const formData = new FormData();
+                formData.append('file', profileImageInput.files[0]);
+                formData.append('type', 'profile');
+
+                const uploadResponse = await fetch(`${API_BASE_URL}/v1/files/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!uploadResponse.ok) {
+                    const errData = await uploadResponse.json();
+                    showCustomModal(errData.message || "이미지 업로드에 실패했습니다.");
+                    return;
+                }
+
+                const uploadData = await uploadResponse.json();
+                profileImageUrl = uploadData.fileUrl; // 업로드된 이미지 URL
+            } catch (error) {
+                console.error('Image Upload Error:', error);
+                showCustomModal("이미지 업로드 중 오류가 발생했습니다.");
+                return;
+            }
+        }
 
         const payload = {
             email: email,
             password: password,
             nickname: nickname,
-            profileimage: profileimage
+            profileImage: profileImageUrl
         };
 
         try {

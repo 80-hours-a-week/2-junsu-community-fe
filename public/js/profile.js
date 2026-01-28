@@ -109,6 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
             currentUser = result.data || result;
 
+            if (currentUser.profileImage) {
+                localStorage.setItem('profileImage', currentUser.profileImage);
+            }
+
             // 폼에 데이터 채우기
             emailDisplay.textContent = currentUser.email || '';
             nicknameInput.value = currentUser.nickname || '';
@@ -126,7 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Failed to load user:', error);
-            showCustomModal('사용자 정보를 불러오는데 실패했습니다.');
+            if (!cachedUserData) { // Only show modal if no cached data was available
+                showCustomModal('사용자 정보를 불러오는데 실패했습니다.');
+            }
         }
     }
 
@@ -162,9 +168,45 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // 이미지 업로드 로직
+        let profileImage = null; // 변경사항 없으면 null 안 보낼수도 있지만, 여기선 API 명세에 따라 결정. 보통 PATCH는 보낸 필드만 수정됨.
+        // 하지만 기존 로직상 닉네임만 보내고 있었음. 프로필 이미지가 선택되었다면 업로드 후 URL 확보.
+
+        let newProfileImageUrl = null;
+        if (imageInput.files[0]) {
+            try {
+                const formData = new FormData();
+                formData.append('file', imageInput.files[0]);
+                formData.append('type', 'profile');
+
+                const uploadResponse = await fetch(`${API_BASE_URL}/v1/files/upload`, {
+                    method: 'POST',
+                    headers: {},
+                    credentials: 'include',
+                    body: formData
+                });
+
+                if (!uploadResponse.ok) {
+                    const errData = await uploadResponse.json();
+                    showHelper(errData.message || "이미지 업로드 실패");
+                    return;
+                }
+
+                const uploadData = await uploadResponse.json();
+                newProfileImageUrl = uploadData.fileUrl;
+            } catch (error) {
+                console.error('Image upload error:', error);
+                showHelper("이미지 업로드 중 오류가 발생했습니다.");
+                return;
+            }
+        }
+
         const payload = {
             nickname: nickname
         };
+        if (newProfileImageUrl) {
+            payload.profileImage = newProfileImageUrl;
+        }
 
         try {
             console.log('=== 프로필 수정 요청 ===');
@@ -238,5 +280,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 8. 초기화
     // ==========================================
+
+    // 로컬 스토리지에서 먼저 로드 (깜박임 방지)
+    const cachedProfileImage = localStorage.getItem('profileImage');
+    if (cachedProfileImage && profileIcon) {
+        profileIcon.style.backgroundImage = `url(${cachedProfileImage})`;
+    }
+
     loadUserData();
 });
