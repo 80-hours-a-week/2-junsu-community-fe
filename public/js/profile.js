@@ -14,9 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const nicknameInput = document.getElementById('nickname');
     const nicknameHelper = document.getElementById('nicknameHelper');
     const imageInput = document.getElementById('imageInput');
-    const fileSelectBtn = document.getElementById('fileSelectBtn');
-    const fileNameSpan = document.getElementById('fileName');
+    const profileImageContainer = document.getElementById('profileImageContainer');
+    const profileImg = document.getElementById('profileImg');
     const submitBtn = document.getElementById('submitBtn');
+    const completeBtn = document.getElementById('completeBtn');
 
     const withdrawBtn = document.getElementById('withdrawBtn');
     const withdrawModal = document.getElementById('withdrawModal');
@@ -118,9 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
             nicknameInput.value = currentUser.nickname || '';
 
             if (currentUser.profileImage) {
-                const fileName = currentUser.profileImage.split('/').pop();
-                fileNameSpan.textContent = fileName || '기존 파일';
-                fileNameSpan.classList.add('selected');
+                // 원형 미리보기 이미지 설정
+                profileImg.src = currentUser.profileImage;
+            } else {
+                // 기본 이미지 처리 (필요시)
+                profileImg.style.backgroundColor = '#C4C4C4';
             }
 
             // 프로필 아이콘 이미지 설정
@@ -143,17 +146,28 @@ document.addEventListener('DOMContentLoaded', () => {
         hideHelper();
     });
 
-    fileSelectBtn.addEventListener('click', () => {
+    profileImageContainer.addEventListener('click', () => {
         imageInput.click();
     });
 
     imageInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
-            fileNameSpan.textContent = file.name;
-            fileNameSpan.classList.add('selected');
+            // 프리뷰 업데이트
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                profileImg.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
     });
+
+    // 수정완료 버튼 - 목록으로 이동
+    if (completeBtn) {
+        completeBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+    }
 
     // ==========================================
     // 6. 폼 제출 - 프로필 수정

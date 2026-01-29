@@ -84,39 +84,62 @@
     visibility: visible;
 }
 
-/* --- Profile Image Upload --- */
-.file-input-wrapper {
-    display: flex;
+/* --- Profile Image Upload (Circular with Overlay) --- */
+.profile-upload-section {
     align-items: center;
-    gap: 12px;
+    /* Label centering */
 }
 
-.file-select-btn {
-    padding: 6px 12px;
-    border: 1px solid #000000;
-    border-radius: 4px;
-    background: #FFFFFF;
-    font-family: 'Pretendard', sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    color: #000000;
+.profile-image-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
     cursor: pointer;
-    transition: background-color 0.2s;
+    background-color: #C4C4C4;
+    /* Place holder color */
+    margin: 10px auto;
+    /* Center horizontally */
+    border: 1px solid #ddd;
 }
 
-.file-select-btn:hover {
-    background: #F5F5F5;
+.profile-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
-.file-name {
-    font-family: 'Pretendard', sans-serif;
-    font-size: 13px;
-    color: #9E9E9E;
+.profile-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    /* Always visible based on design */
+    transition: opacity 0.2s;
 }
 
-.file-name.selected {
-    color: #000000;
+.profile-image-container:hover .profile-overlay {
+    opacity: 1;
 }
+
+.overlay-text {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    padding: 4px 12px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
 
 /* --- Submit Button --- */
 .submit-btn {
@@ -125,7 +148,8 @@
     margin-top: 10px;
     padding: 0;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
+    /* More squared as per typical forms */
     background-color: #ACA0EB;
     font-family: 'Pretendard', sans-serif;
     font-size: 16px;
@@ -136,6 +160,27 @@
 }
 
 .submit-btn:hover {
+    background-color: #7F6AEE !important;
+}
+
+/* --- Complete Button (Bottom) --- */
+.complete-btn {
+    display: block;
+    margin: 60px auto 20px;
+    /* Spacing from form */
+    padding: 12px 40px;
+    background-color: #ACA0EB;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    /* Fully rounded pill shape */
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.complete-btn:hover {
     background-color: #7F6AEE;
 }
 
