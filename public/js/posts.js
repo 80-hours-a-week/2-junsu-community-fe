@@ -64,9 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                if (posts.length > 0) {
-                    console.log('[게시글] 첫 번째 게시글 데이터:', posts[0]);
-                }
 
                 posts.forEach(post => {
                     const postEl = createPostElement(post);
