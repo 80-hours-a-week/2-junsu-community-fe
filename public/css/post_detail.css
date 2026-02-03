@@ -1,0 +1,380 @@
+/* 
+  Post Detail Page Styles - 게시글 상세 페이지 스타일
+*/
+
+/* --- Container --- */
+.post-detail-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 30px 20px;
+    box-sizing: border-box;
+}
+
+/* --- Article --- */
+.post-article {
+    width: 100%;
+    max-width: 600px;
+    background: transparent;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Post Title */
+.post-title {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0 0 20px 0;
+    line-height: 1.3;
+}
+
+/* Post Meta Row */
+.post-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.author-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.author-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #D9D9D9;
+    background-size: cover;
+    background-position: center;
+}
+
+.author-name {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    /* Bold */
+    color: #000;
+}
+
+.post-date {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 14px;
+    color: #000;
+    margin-left: 10px;
+    /* Spacing from name */
+}
+
+/* Post Actions (Edit/Delete) */
+.post-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border: 1px solid #000000;
+    /* Black border */
+    border-radius: 8px;
+    /* Slightly rounded */
+    background: white;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 12px;
+    color: #000000;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    background: #F5F5F5;
+}
+
+/* Divider */
+.post-divider {
+    width: 100%;
+    height: 1px;
+    background-color: #E0E0E0;
+    /* Light gray line */
+    margin-bottom: 20px;
+}
+
+/* Post Image */
+.post-image-container {
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 0;
+    overflow: hidden;
+    background-color: #E0E0E0;
+}
+
+.post-image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Post Content */
+.post-content {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #333;
+    margin-bottom: 40px;
+    white-space: pre-wrap;
+    min-height: 100px;
+}
+
+/* Stats Box (Gray Box) */
+.stats-box {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    /* Space between items */
+    padding: 0;
+    margin-bottom: 40px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    /* Reduced from 130px */
+    height: 60px;
+    /* Reduced from 80px */
+    background-color: #D9D9D9;
+    /* Gray box color */
+    border-radius: 10px;
+    border: none;
+    cursor: default;
+}
+
+.like-btn {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.like-btn:hover {
+    opacity: 0.9;
+}
+
+.stat-count {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 18px;
+    /* Title size inside box */
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 4px;
+}
+
+.stat-item.liked .stat-count,
+.like-btn.liked .stat-count {
+    color: #ACA0EB;
+    /* Active color if needed */
+}
+
+.stat-label {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    /* Bold label */
+    color: #000000;
+}
+
+/* --- Comments Section --- */
+.comments-section {
+    width: 100%;
+    max-width: 600px;
+    padding-top: 20px;
+    border-top: 1px solid #E0E0E0;
+}
+
+/* Comment Input */
+.comment-input-area {
+    margin-bottom: 30px;
+}
+
+.comment-input-area textarea {
+    width: 100%;
+    height: 100px;
+    padding: 12px;
+    border: 1px solid #E0E0E0;
+    /* or none/transparent if design implies */
+    border-radius: 8px;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 14px;
+    resize: none;
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+}
+
+.comment-submit-btn {
+    display: block;
+    margin-left: auto;
+    margin-top: 10px;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #ACA0EB;
+    color: white;
+    font-weight: 700;
+    cursor: not-allowed;
+    transition: background-color 0.2s;
+}
+
+.comment-submit-btn.active {
+    background-color: #7F6AEE;
+    cursor: pointer;
+}
+
+/* Comment List */
+.comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Comment Item */
+.comment-item {
+    padding: 0;
+    background: transparent;
+    border-bottom: 1px solid #F0F0F0;
+    padding-bottom: 20px;
+}
+
+.comment-item:last-child {
+    border-bottom: none;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.comment-author-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comment-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #D9D9D9;
+    background-size: cover;
+}
+
+.comment-author-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+}
+
+.comment-date {
+    font-size: 12px;
+    color: #9E9E9E;
+    margin-left: 6px;
+}
+
+.comment-content {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+    padding-left: 46px;
+    /* Align with text start (avatar width + gap) */
+}
+
+/* Comment Actions */
+.comment-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.comment-action-btn {
+    padding: 4px 8px;
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    cursor: pointer;
+}
+
+/* --- Modal --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-box {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    width: 300px;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 8px;
+}
+
+.modal-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 24px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.cancel-btn {
+    background-color: #F0F0F0;
+    color: #333;
+}
+
+.confirm-btn {
+    background-color: #ACA0EB;
+    color: white;
+}
+
+/* --- Back Button --- */
+.back-button {
+    text-decoration: none;
+    font-size: 24px;
+    color: #333;
+    position: absolute;
+    left: 20px;
+    font-weight: bold;
+}

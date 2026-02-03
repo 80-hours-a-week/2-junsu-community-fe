@@ -1,0 +1,339 @@
+/* 
+  Profile Page Styles - 회원정보수정 페이지 스타일
+*/
+
+/* --- Container --- */
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.page-title {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #000000;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* --- Form Styles --- */
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    gap: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group label {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #000000;
+}
+
+/* Email Display (Read-only) */
+.email-display {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 14px;
+    color: #666;
+    padding: 8px 0;
+}
+
+/* Nickname Input */
+.input-group input[type="text"] {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 14px;
+    color: #000000;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.input-group input[type="text"]:focus {
+    border-color: #7F6AEE;
+}
+
+/* Helper Text */
+.helper-text {
+    min-height: 15px;
+    visibility: hidden;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #FF0000;
+}
+
+.helper-text.show {
+    visibility: visible;
+}
+
+/* --- Profile Image Upload (Circular with Overlay) --- */
+.profile-upload-section {
+    align-items: center;
+    /* Label centering */
+}
+
+.profile-image-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    background-color: #C4C4C4;
+    /* Place holder color */
+    margin: 10px auto;
+    /* Center horizontally */
+    border: 1px solid #ddd;
+}
+
+.profile-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    /* Always visible based on design */
+    transition: opacity 0.2s;
+}
+
+.profile-image-container:hover .profile-overlay {
+    opacity: 1;
+}
+
+.overlay-text {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    padding: 4px 12px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+
+/* --- Submit Button --- */
+.submit-btn {
+    width: 100%;
+    height: 42px;
+    margin-top: 10px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    /* More squared as per typical forms */
+    background-color: #ACA0EB;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #7F6AEE !important;
+}
+
+/* --- Complete Button (Bottom) --- */
+.complete-btn {
+    display: block;
+    margin: 60px auto 20px;
+    /* Spacing from form */
+    padding: 12px 40px;
+    background-color: #ACA0EB;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    /* Fully rounded pill shape */
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.complete-btn:hover {
+    background-color: #7F6AEE;
+}
+
+/* --- Withdraw Link --- */
+.withdraw-link {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.withdraw-link a {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 14px;
+    color: #666;
+    text-decoration: none;
+}
+
+.withdraw-link a:hover {
+    text-decoration: underline;
+}
+
+/* --- Dropdown Menu --- */
+.header-content {
+    position: relative;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: white;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 140px;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.profile-dropdown.show {
+    display: block;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 12px 16px;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 13px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #E9E9E9;
+}
+
+.dropdown-item.active {
+    color: #7F6AEE;
+    font-weight: 600;
+}
+
+/* --- Modal --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-box {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 90%;
+}
+
+.modal-title {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #000;
+    margin: 0 0 12px 0;
+}
+
+.modal-subtitle {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 15px;
+    color: #666;
+    margin: 0 0 30px 0;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.modal-btn {
+    flex: 1;
+    max-width: 140px;
+    padding: 14px 0;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.modal-btn:hover {
+    opacity: 0.85;
+}
+
+.cancel-btn {
+    background-color: #000000;
+    color: white;
+}
+
+.confirm-btn {
+    background-color: #ACA0EB;
+    color: white;
+}
+
+/* --- Toast Message --- */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #333;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 14px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 10000;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}

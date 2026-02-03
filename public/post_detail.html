@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 상세 - 아무 말 대잔치</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/post_detail.css">
+    <script>
+        (function () {
+            var img = localStorage.getItem('profileImage');
+            if (img) {
+                var style = document.createElement('style');
+                style.textContent = '#profileIcon { background-image: url(' + img + ') !important; }';
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <header>
+        <a href="/posts" class="back-button">&lt;</a>
+        <span class="logo">아무 말 대잔치</span>
+        <div class="header-content">
+            <div class="profile-icon" id="profileIcon"></div>
+            <!-- 드롭다운 메뉴 -->
+            <div class="profile-dropdown" id="profileDropdown">
+                <a href="profile.html" class="dropdown-item">회원정보수정</a>
+                <a href="password.html" class="dropdown-item">비밀번호수정</a>
+                <a href="#" class="dropdown-item" id="logoutBtn">로그아웃</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="post-detail-container">
+        <!-- 게시글 본문 영역 -->
+        <article class="post-article">
+            <!-- 제목 -->
+            <h1 class="post-title" id="postTitle"></h1>
+
+            <!-- 작성자 정보 + 수정/삭제 버튼 -->
+            <div class="post-meta-row">
+                <div class="author-info">
+                    <div class="author-avatar" id="authorAvatar"></div>
+                    <span class="author-name" id="authorName"></span>
+                    <span class="post-date" id="postDate"></span>
+                </div>
+                <!-- 수정/삭제 버튼 (본인일 때만 표시) -->
+                <div class="post-actions" id="postActions" style="display: none;">
+                    <button class="action-btn edit-btn" id="editPostBtn">수정</button>
+                    <button class="action-btn delete-btn" id="deletePostBtn">삭제</button>
+                </div>
+            </div>
+
+            <div class="post-divider"></div>
+
+            <!-- 게시글 이미지 -->
+            <div class="post-image-container" id="postImageContainer" style="display: none;">
+                <img id="postImage" src="" alt="게시글 이미지">
+            </div>
+
+            <!-- 본문 내용 -->
+            <div class="post-content" id="postContent"></div>
+
+            <!-- 통계 박스 (좋아요, 조회수, 댓글수) -->
+            <div class="stats-box">
+                <button class="stat-item like-btn" id="likeBtn">
+                    <span class="stat-count" id="likeCount">0</span>
+                    <span class="stat-label">좋아요수</span>
+                </button>
+                <div class="stat-item">
+                    <span class="stat-count" id="viewCount">0</span>
+                    <span class="stat-label">조회수</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-count" id="commentCount">0</span>
+                    <span class="stat-label">댓글</span>
+                </div>
+            </div>
+        </article>
+
+        <!-- 댓글 영역 -->
+        <section class="comments-section">
+            <!-- 댓글 입력 -->
+            <div class="comment-input-area">
+                <textarea id="commentInput" placeholder="댓글을 남겨주세요!"></textarea>
+                <button type="button" id="commentSubmitBtn" class="comment-submit-btn" disabled>댓글 등록</button>
+            </div>
+
+            <!-- 댓글 목록 -->
+            <div class="comment-list" id="commentList">
+                <!-- 댓글 아이템들이 JS로 렌더링됨 -->
+            </div>
+        </section>
+    </main>
+
+    <!-- 삭제 확인 모달 -->
+    <div class="modal-overlay" id="deleteModal" style="display: none;">
+        <div class="modal-box">
+            <p class="modal-title" id="modalTitle">게시글을 삭제하시겠습니까?</p>
+            <p class="modal-subtitle">삭제한 내용은 복구 할 수 없습니다.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" id="modalCancelBtn">취소</button>
+                <button class="modal-btn confirm-btn" id="modalConfirmBtn">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/modal.js"></script>
+    <script src="js/post_detail.js"></script>
+</body>
+
+</html>

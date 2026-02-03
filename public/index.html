@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아무 말 대잔치</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/posts.css">
+    <script>
+        // 프로필 이미지 깜빡임 방지 - body 렌더링 전 즉시 실행
+        (function () {
+            var img = localStorage.getItem('profileImage');
+            if (img) {
+                var style = document.createElement('style');
+                style.textContent = '#profileIcon { background-image: url(' + img + ') !important; }';
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <!-- 상단 메뉴바 -->
+    <header>
+        <span class="logo">아무 말 대잔치</span>
+        <div class="header-content">
+            <div class="profile-icon" id="profileIcon"></div>
+            <!-- 드롭다운 메뉴 -->
+            <div class="profile-dropdown" id="profileDropdown">
+                <a href="profile.html" class="dropdown-item">회원정보수정</a>
+                <a href="password.html" class="dropdown-item">비밀번호수정</a>
+                <a href="#" class="dropdown-item" id="logoutBtn">로그아웃</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="post-list-container">
+
+        <div class="welcome-section">
+            안녕하세요,<br>
+            아무 말 대잔치 <span>게시판</span> 입니다.
+        </div>
+
+        <div class="action-section">
+            <button class="write-btn" onclick="location.href='post_write.html'">게시글 작성</button>
+        </div>
+
+        <!-- 게시글 목록 (JS로 채워짐) -->
+        <div id="postList" class="post-list">
+            <!-- Dummy Data Loading... -->
+        </div>
+
+        <!-- 무한 스크롤 트리거 (바닥 감지용) -->
+        <div id="scrollTrigger" style="height: 20px;"></div>
+    </main>
+
+    <script src="js/common.js"></script>
+    <script src="js/modal.js"></script>
+    <script src="js/posts.js"></script>
+</body>
+
+</html>
